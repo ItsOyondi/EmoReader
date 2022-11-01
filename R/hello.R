@@ -17,3 +17,9 @@ hello <- function() {
   print("Hello, world!")
   print("Akhila added few changes")
 }
+
+
+prof <- function() {
+  print("Hello, world!")
+  print("Josephat")
+}
