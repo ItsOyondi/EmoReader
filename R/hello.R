@@ -15,4 +15,18 @@
 
 hello <- function() {
   print("Hello, world!")
+
+  
+}
+pack_j <-function(){
+  print("Josephat new changes to R project")  
+
+  print("Akhila added few changes")
+}
+
+
+prof <- function() {
+  print("Hello, world!")
+  print("Josephat")
+ 
 }
