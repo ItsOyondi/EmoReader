@@ -17,6 +17,7 @@ library(dplyr)
 library(stringr)
 library(tidytext)
 library(ggplot2)
+library(tidyr)
 
 read_data <- function(){
   data = read.csv("amazon.csv")
