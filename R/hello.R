@@ -45,6 +45,8 @@ data_preprocess <- function(){
     geom_col() +
     xlab(NULL) +
     coord_flip()
+  tidy_data %>%
+    pivot_wider(names_from = word, values_from = n)
 }
 
 data_preprocess()
