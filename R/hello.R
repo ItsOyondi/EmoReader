@@ -50,5 +50,8 @@ data_preprocess <- function(){
     pivot_wider(names_from = word, values_from = n)
 }
 
-data_preprocess()
+data=data_preprocess()
+
+
+write.csv(data,"amazonlong.csv", row.names = TRUE)
 
