@@ -44,7 +44,7 @@ data_preprocess <- function(){
   df #return the data frame
 }
 
-data_preprocess()
+data = data_preprocess()
 
 
 
