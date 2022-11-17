@@ -70,3 +70,19 @@ bing_word_counts <- text %>% unnest_tokens(output = word, input = review) %>%
   inner_join(get_sentiments("bing")) %>%
   count(word, sentiment, sort = TRUE)
 
+#Finding our top words as per the sentiments
+top_word <- bing_word_counts %>%
+  group_by(sentiment) %>%
+  slice_max(order_by = n, n= 30) %>%
+  ungroup() %>%
+  mutate(word = reorder(word,n))
+top_word
+
+#Creating visualization of the positive/negative sentiments
+top_word%>%
+  ggplot(aes(word, n, fill = sentiment)) +
+  geom_col(show.legend = FALSE) +
+  facet_wrap(~sentiment, scales = "free_y") +
+  labs(y = "Contribution to sentiments", x = NULL)+
+  coord_flip()
+
