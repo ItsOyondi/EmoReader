@@ -46,6 +46,21 @@ data_preprocess <- function(){
 
 data = data_preprocess()
 
+# seperating the files by their rating
+Five_star<-tidy_data_clean %>% filter(tidy_data_clean$star_rating==5)
+write.csv(Five_star,"Five_star.csv", row.names = TRUE)
+
+Four_star<-tidy_data_clean %>% filter(tidy_data_clean$star_rating==4)
+write.csv(Four_star,"Four_star.csv", row.names = TRUE)
+
+Three_star<-tidy_data_clean %>% filter(tidy_data_clean$star_rating==3)
+write.csv(Three_star,"Three_star.csv", row.names = TRUE)
+
+Two_star<-tidy_data_clean %>% filter(tidy_data_clean$star_rating==2)
+write.csv(Two_star,"Two_star.csv", row.names = TRUE)
+
+One_star<-tidy_data_clean %>% filter(tidy_data_clean$star_rating==1)
+write.csv(One_star,"One_star.csv", row.names = TRUE)
 
 
 write.csv(data,"amazonlong.csv", row.names = TRUE)
