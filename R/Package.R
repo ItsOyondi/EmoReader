@@ -58,3 +58,9 @@ emosum <- data.frame(count = emosbar, emotion = names(emosbar))
 ggplot(emosum, aes(x = reorder(emotion, -count), y = count))+
   geom_bar(stat = "identity")
 
+#Sentiment Analysis using the "bing" lexicon
+bing_word_counts <- text %>% unnest_tokens(output = word, input = review) %>%
+  inner_join(get_sentiments("bing")) %>%
+  count(word, sentiment, sort = TRUE)
+
+
