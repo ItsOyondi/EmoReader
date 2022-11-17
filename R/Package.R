@@ -1,5 +1,6 @@
 
 
+#import libraries
 library(dplyr)
 library(stringr)
 library(tidytext)
@@ -9,7 +10,7 @@ library(syuzhet)
 
 read_data <- function(){
   data = read.csv("amazon.csv")
-  
+
   data <- data.frame(star_rating = data$star_rating, review = data$review_body) #convert to a dataframe
   return (data)
 }
@@ -17,16 +18,17 @@ read_data <- function(){
 data_preprocess <- function(){
   #data preprocessing
   data(stop_words)
-  
+
   data = read_data()
-  
+
   tidy_data <- data %>%
     unnest_tokens(word, review) %>%
     anti_join(stop_words) %>%  # remove stop words
+
     group_by(star_rating) %>%  #group the term frequencies by star ratings
     count(word, sort = TRUE) #get the word count for each term
-  
-  
+
+
   tidy_data %>%
     filter(n > 100) %>%
     mutate(word = reorder(word, n)) %>%
@@ -34,11 +36,16 @@ data_preprocess <- function(){
     geom_col() +
     xlab(NULL) +
     coord_flip()
-  tidy_data %>%
+
+  df <- tidy_data %>%
     pivot_wider(names_from = word, values_from = n)
+
+  df <- subset(df, select = -c(br)) #remove uncessary column - br
+  df #return the data frame
 }
 
-data=data_preprocess()
+data_preprocess()
+
 
 
 write.csv(data,"amazonlong.csv", row.names = TRUE)
@@ -62,5 +69,4 @@ ggplot(emosum, aes(x = reorder(emotion, -count), y = count))+
 bing_word_counts <- text %>% unnest_tokens(output = word, input = review) %>%
   inner_join(get_sentiments("bing")) %>%
   count(word, sentiment, sort = TRUE)
-
 
