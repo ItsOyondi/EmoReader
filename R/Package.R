@@ -1,23 +1,11 @@
-# Hello, world!
-#
-# This is an example function named 'hello' 
-# which prints 'Hello, world!'.
-#
-# You can learn more about package authoring with RStudio at:
-#
-#   http://r-pkgs.had.co.nz/
-#
-# Some useful keyboard shortcuts for package authoring:
-#
-#   Install Package:           'Cmd + Shift + B'
-#   Check Package:             'Cmd + Shift + E'
-#   Test Package:              'Cmd + Shift + T'
+
 
 library(dplyr)
 library(stringr)
 library(tidytext)
 library(ggplot2)
 library(tidyr)
+library(syuzhet)
 
 read_data <- function(){
   data = read.csv("amazon.csv")
@@ -54,4 +42,19 @@ data=data_preprocess()
 
 
 write.csv(data,"amazonlong.csv", row.names = TRUE)
+
+#Analyzing the sentiments using the syuzhet package
+
+text.df <- tibble(review = str_to_lower(data$review))
+
+#Selecting only 1% of the data first to test if we can get the emotions
+text <- sample_frac(text.df, 0.01)
+
+emotions <- get_nrc_sentiment(text$review)
+emosbar <- colSums(emotions)
+emosum <- data.frame(count = emosbar, emotion = names(emosbar))
+
+#Creating a bar plot showing the counts for each different emotions
+ggplot(emosum, aes(x = reorder(emotion, -count), y = count))+
+  geom_bar(stat = "identity")
 
