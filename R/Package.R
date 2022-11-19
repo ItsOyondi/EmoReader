@@ -1,5 +1,3 @@
-
-
 #import libraries
 library(dplyr)
 library(stringr)
@@ -7,6 +5,9 @@ library(tidytext)
 library(ggplot2)
 library(tidyr)
 library(syuzhet)
+library(tidyverse)
+library(cluster)    # clustering algorithms
+library(factoextra) # clustering algorithms & visualization
 
 read_data <- function(){
   data = read.csv("amazon.csv")
@@ -15,55 +16,17 @@ read_data <- function(){
   return (data)
 }
 
-data_preprocess <- function(){
-  #data preprocessing
-  data(stop_words)
 
-  data = read_data()
-
-  tidy_data <- data %>%
-    unnest_tokens(word, review) %>%
-    anti_join(stop_words) %>%  # remove stop words
-
-    group_by(star_rating) %>%  #group the term frequencies by star ratings
-    count(word, sort = TRUE) #get the word count for each term
-
-
-  tidy_data %>%
-    filter(n > 100) %>%
-    mutate(word = reorder(word, n)) %>%
-    ggplot(aes(word, n)) +
-    geom_col() +
-    xlab(NULL) +
-    coord_flip()
-
-  df <- tidy_data %>%
-    pivot_wider(names_from = word, values_from = n)
-
-  df <- subset(df, select = -c(br)) #remove uncessary column - br
-  df #return the data frame
-}
-
-data = data_preprocess()
+tidy_data_clean = read_data()
 
 # seperating the files by their rating
-Five_star<-tidy_data_clean %>% filter(tidy_data_clean$star_rating==5)
-write.csv(Five_star,"Five_star.csv", row.names = TRUE)
+Five_star<-tidy_data_clean %>%filter(star_rating==5)
 
-Four_star<-tidy_data_clean %>% filter(tidy_data_clean$star_rating==4)
-write.csv(Four_star,"Four_star.csv", row.names = TRUE)
+Four_star<-tidy_data_clean %>% filter(star_rating==4)
+Three_star<-tidy_data_clean %>% filter(star_rating==3)
+Two_star<-tidy_data_clean %>% filter(star_rating==2)
 
-Three_star<-tidy_data_clean %>% filter(tidy_data_clean$star_rating==3)
-write.csv(Three_star,"Three_star.csv", row.names = TRUE)
-
-Two_star<-tidy_data_clean %>% filter(tidy_data_clean$star_rating==2)
-write.csv(Two_star,"Two_star.csv", row.names = TRUE)
-
-One_star<-tidy_data_clean %>% filter(tidy_data_clean$star_rating==1)
-write.csv(One_star,"One_star.csv", row.names = TRUE)
-
-
-write.csv(data,"amazonlong.csv", row.names = TRUE)
+One_star<-tidy_data_clean %>% filter(star_rating==1)
 
 #Analyzing the sentiments using the syuzhet package
 
