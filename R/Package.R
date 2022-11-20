@@ -64,3 +64,9 @@ top_word%>%
   labs(y = "Contribution to sentiments", x = NULL)+
   coord_flip()
 
+#Visualizing how the positive and negative sentiments are located
+bing_word_counts %>%
+  ggplot(aes(word, n, color = sentiment))+
+  geom_point()
+
+
