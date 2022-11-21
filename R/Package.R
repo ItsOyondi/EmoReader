@@ -19,14 +19,20 @@ read_data <- function(){
 
 tidy_data_clean = read_data()
 
+#Statistical analysis of  the data
+output <- summary(tidy_data_clean)
+view(output)
+
 # seperating the files by their rating
 Five_star<-tidy_data_clean %>%filter(star_rating==5)
-
 Four_star<-tidy_data_clean %>% filter(star_rating==4)
 Three_star<-tidy_data_clean %>% filter(star_rating==3)
 Two_star<-tidy_data_clean %>% filter(star_rating==2)
-
 One_star<-tidy_data_clean %>% filter(star_rating==1)
+
+#Total number of instances having positive and negative reviews
+count_no <- tidy_data_clean %>%
+  count(star_rating)
 
 #Analyzing the sentiments using the syuzhet package
 
