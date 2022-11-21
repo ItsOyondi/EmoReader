@@ -8,6 +8,7 @@ library(syuzhet)
 library(tidyverse)
 library(cluster)    # clustering algorithms
 library(factoextra) # clustering algorithms & visualization
+library(MASS) #dimension reduction
 
 read_data <- function(){
   data = read.csv("amazon.csv")
@@ -74,5 +75,23 @@ top_word%>%
 bing_word_counts %>%
   ggplot(aes(word, n, color = sentiment))+
   geom_point()
+
+#Dimension Reduction of emotions - PCA
+data(emotions, package = "MASS")
+pca_out <- prcomp (emotions, scale = T)
+pca_out
+
+emotions_pc <- pca_out$x
+emotions_pc
+
+#Running the summary of the PCA dimension reduction - shows cumulative variance explained by the PCA
+summary(pca_out)
+
+#Plotting the summary statistics of PCA
+plot(pca_out) # x-axis represents the number of PCA
+
+#Biplotting to see how the features are related
+par(mar=c(4,4,2,2))
+biplot(pca_out, cex = 0.5, cex.axis = 0.5) #each number is the row in the dataset and the points in the red are the columns
 
 
