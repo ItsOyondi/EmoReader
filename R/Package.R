@@ -75,6 +75,31 @@ write.csv(emotions, file ="my_mat.csv",row.names = TRUE)
 sparsematrix <- as(my_mat, "sparseMatrix")
 sparsematrix
 
+#For NMF - Dimension Reduction
+library(singlet)
+data <- ard_nmf(sparsematrix)
+hist(sparsematrix@x)
+plot(density(sparsematrix@x))
+
+#Normalizing the data
+norm_data <- sparsematrix
+norm_data <- Seurat::LogNormalize(norm_data)
+
+nmf_model <- ard_nmf(norm_data)
+str(nmf_model)
+str(sparsematrix)
+
+h <- nmf_model$h
+colnames(nmf_model$h) <- colnames(sparsematrix)
+heatmap(h)
+dim(nmf_model$w)
+
+stars <- emo$star_rating
+plot(nmf_model$w[,1], stars)
+df <- cbind(stars, nmf_model$w)
+df <- as.data.frame(df)
+ggplot(df, aes(stars, NMF_1, group = stars)) + geom_boxplot()
+
 
 #Creating a bar plot showing the counts for each different emotions
 ggplot(emosum, aes(x = reorder(emotion, -count), y = count))+
@@ -106,22 +131,7 @@ bing_word_counts %>%
   ggplot(aes(word, n, color = sentiment))+
   geom_point()
 
-#Dimension Reduction of emotions - PCA
-data(emotions, package = "MASS")
-pca_out <- prcomp (emotions, scale = T)
-pca_out
 
-emotions_pc <- pca_out$x
-emotions_pc
 
-#Running the summary of the PCA dimension reduction - shows cumulative variance explained by the PCA
-summary(pca_out)
-
-#Plotting the summary statistics of PCA
-plot(pca_out) # x-axis represents the number of PCA
-
-#Biplotting to see how the features are related
-par(mar=c(4,4,2,2))
-biplot(pca_out, cex = 0.5, cex.axis = 0.5) #each number is the row in the dataset and the points in the red are the columns
 
 
