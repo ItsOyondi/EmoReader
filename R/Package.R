@@ -12,37 +12,56 @@ library(MASS) #dimension reduction
 
 read_data <- function(){
   data = read.csv("amazon.csv")
+  
+  data <- tibble::rowid_to_column(data, "id")
+  
+  data$review_body <- gsub("shouldn't","should not",data$review_body)
+  data$review_body <- gsub("didn't","did not",data$review_body)
+  data$review_body <- gsub("don't","do not",data$review_body)
+  data$review_body <- gsub("can't","can not",data$review_body)
+  data$review_body <- gsub("couldn't","could not",data$review_body)
+  data$review_body <- gsub("'ll"," will",data$review_body)
+  data$review_body <- gsub("'ve"," have",data$review)
+  data$review_body <- gsub("i'm"," I am",data$review)
 
-  data <- data.frame(star_rating = data$star_rating, review = data$review_body) #convert to a dataframe
-  return (data)
+  df <- data.frame(id = data$id, star_rating = data$star_rating, review = data$review_body) #convert to a dataframe
+  return (df)
 }
 
 
-tidy_data_clean = read_data()
+tidy_data = read_data()
 
 #Statistical analysis of  the data
-output <- summary(tidy_data_clean)
+output <- summary(tidy_data)
 view(output)
 
 # seperating the files by their rating
-Five_star<-tidy_data_clean %>%filter(star_rating==5)
-Four_star<-tidy_data_clean %>% filter(star_rating==4)
-Three_star<-tidy_data_clean %>% filter(star_rating==3)
-Two_star<-tidy_data_clean %>% filter(star_rating==2)
-One_star<-tidy_data_clean %>% filter(star_rating==1)
+Five_star<-tidy_data %>%filter(star_rating==5)
+Four_star<-tidy_data %>% filter(star_rating==4)
+Three_star<-tidy_data %>% filter(star_rating==3)
+Two_star<-tidy_data %>% filter(star_rating==2)
+One_star<-tidy_data %>% filter(star_rating==1)
 
 #Total number of instances having positive and negative reviews
-count_no <- tidy_data_clean %>%
+count_no <- tidy_data %>%
   count(star_rating)
 
 #Analyzing the sentiments using the syuzhet package
 
-text.df <- tibble(review = str_to_lower(data$review))
+text <- tibble(review = str_to_lower(tidy_data$review))
 
-#Selecting only 1% of the data first to test if we can get the emotions
-text <- sample_frac(text.df, 0.01)
 
+# THIS CODE BELOW WILL TAKE LOT OF TIME TO EXECUTE 
 emotions <- get_nrc_sentiment(text$review)
+
+#adding id to the dataset
+emotions <- tibble::rowid_to_column(emotions, "id")
+
+
+tidy_data_emotion= tidy_data %>% inner_join(emotions,by="id")
+
+
+
 emosbar <- colSums(emotions)
 emosum <- data.frame(count = emosbar, emotion = names(emosbar))
 
