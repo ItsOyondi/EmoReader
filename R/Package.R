@@ -64,6 +64,18 @@ emotions <- data.frame(anger = emo$anger, anticipation = emo$anticipation, disgu
 emosbar <- colSums(emotions)
 emosum <- data.frame(count = emosbar, emotion = names(emosbar))
 
+#building a matrix of emotion dataframe
+my_mat <- as.matrix(emotions)
+my_mat
+
+#Saving the matrix as csv
+write.csv(emotions, file ="my_mat.csv",row.names = TRUE)
+
+#Building the Sparse matrix from the emotions matrix
+sparsematrix <- as(my_mat, "sparseMatrix")
+sparsematrix
+
+
 #Creating a bar plot showing the counts for each different emotions
 ggplot(emosum, aes(x = reorder(emotion, -count), y = count))+
   geom_bar(stat = "identity")
