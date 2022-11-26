@@ -10,11 +10,12 @@ library(cluster)    # clustering algorithms
 library(factoextra) # clustering algorithms & visualization
 library(MASS) #dimension reduction
 
-read_data <- function(){
-  data = read.csv("amazon.csv")
-  
+read_data <- function(csv_file){
+
+  data = data.table::fread(csv_file)
+
   data <- tibble::rowid_to_column(data, "id")
-  
+
   data$review_body <- gsub("shouldn't","should not",data$review_body)
   data$review_body <- gsub("didn't","did not",data$review_body)
   data$review_body <- gsub("don't","do not",data$review_body)
@@ -28,8 +29,8 @@ read_data <- function(){
   return (df)
 }
 
+tidy_data <- read_data("amazon.csv")
 
-tidy_data = read_data()
 
 #Statistical analysis of  the data
 output <- summary(tidy_data)
