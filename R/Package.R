@@ -121,16 +121,27 @@ model <- function(){
 model()
 
 
-h <- nmf_model$h
-colnames(nmf_model$h) <- colnames(sparsematrix)
-heatmap(h)
+heat <- function(){
+  h <- nmf_model$h
+  colnames(nmf_model$h) <- colnames(sparsematrix)
+  heatmap(h)
+  return(heat)
+}
+
+heat()
+
 dim(nmf_model$w)
 
-stars <- emo$star_rating
-plot(nmf_model$w[,1], stars)
-df <- cbind(stars, nmf_model$w)
-df <- as.data.frame(df)
-ggplot(df, aes(stars, NMF_1, group = stars)) + geom_boxplot()
+viz <- function(){
+  stars <- emo$star_rating
+  plot(nmf_model$w[,1], stars)
+  df <- cbind(stars, nmf_model$w)
+  df <- as.data.frame(df)
+  ggplot(df, aes(stars, NMF_1, group = stars)) + geom_boxplot()
+  return(ggplot)
+}
+
+viz()
 
 #PCA - Dimension Reduction
 
