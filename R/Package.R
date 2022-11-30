@@ -161,14 +161,15 @@ biplot(pca_out, cex = 0.5, cex.axis = 0.5) #each number is the row in the datase
 
 
 cluster_kmeans <- function(data_matrix){
-
+  #reference
+  #https://www.geeksforgeeks.org/k-means-clustering-in-r-programming/
   dataframe_data=as.data.frame(data_matrix)
   #clean df
   c_df = na.omit(dataframe_data)
   ################################ k-means clustering approach 1
   #fit the k-means clustering model
   set.seed(1234) # Setting seed
-  kmeans.re <- kmeans(c_df, centers = 8, nstart = 20)
+  kmeans.re <- kmeans(c_df, centers = 5, nstart = 20)
   kmeans.re
 
 
@@ -196,12 +197,12 @@ cluster_kmeans <- function(data_matrix){
            lines = 0,
            shade = TRUE,
            color = TRUE,
-           labels = 2,
+           labels = 4,
            plotchar = FALSE,
            span = TRUE,
            main = paste("Cluster Amazon reviews"),
            xlab = 'positive',
-           ylab = 'negative')
+           ylab = 'negative', cex=1)
 }
 
 cluster_kmeans(my_mat)
