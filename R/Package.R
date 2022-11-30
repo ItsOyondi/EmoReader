@@ -9,6 +9,7 @@ library(tidyverse)
 library(cluster)    # clustering algorithms
 library(factoextra) # clustering algorithms & visualization
 library(MASS) #dimension reduction
+library(singlet)
 
 read_data <- function(csv_file){
 
@@ -76,19 +77,35 @@ write.csv(emotions, file ="my_mat.csv",row.names = TRUE)
 sparsematrix <- as(my_mat, "sparseMatrix")
 sparsematrix
 
-#For NMF - Dimension Reduction
-library(singlet)
-data <- ard_nmf(sparsematrix)
-hist(sparsematrix@x)
-plot(density(sparsematrix@x))
+#NMF - Dimension Reduction
+nmf_func <- function(nmfdim){
+  data_nmf <- ard_nmf(sparsematrix)
+  hist(sparsematrix@x)
+  plot(density(sparsematrix@x))
+
+  return(plot)
+}
+
+nmf_func(nmfdata)
 
 #Normalizing the data
-norm_data <- sparsematrix
-norm_data <- Seurat::LogNormalize(norm_data)
 
-nmf_model <- ard_nmf(norm_data)
-str(nmf_model)
-str(sparsematrix)
+norm_fun <- function(){
+  norm_data <- sparsematrix
+  norm_data <- Seurat::LogNormalize(norm_data)
+  return(norm_data)
+}
+norm_fun()
+
+model <- function(){
+  nmf_model <- ard_nmf(norm_data)
+  str(nmf_model)
+  str(sparsematrix)
+  return (str)
+}
+
+model()
+
 
 h <- nmf_model$h
 colnames(nmf_model$h) <- colnames(sparsematrix)
