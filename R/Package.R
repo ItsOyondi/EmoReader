@@ -110,37 +110,23 @@ norm_fun <- function(){
 }
 norm_fun()
 
-model <- function(){
+modeling_nmf <- function(){
   nmf_model <- ard_nmf(norm_data)
   str(nmf_model)
   str(sparsematrix)
   return (str)
 }
 
-model()
+modeling_nmf()
 
-
-heat <- function(){
+heatmap_visualize <- function(){
   h <- nmf_model$h
   colnames(nmf_model$h) <- colnames(sparsematrix)
   heatmap(h)
   return(heat)
 }
 
-heat()
-
-dim(nmf_model$w)
-
-viz <- function(){
-  stars <- emo$star_rating
-  plot(nmf_model$w[,1], stars)
-  df <- cbind(stars, nmf_model$w)
-  df <- as.data.frame(df)
-  ggplot(df, aes(stars, NMF_1, group = stars)) + geom_boxplot()
-  return(ggplot)
-}
-
-viz()
+heatmap_visualize()
 
 #PCA - Dimension Reduction
 
