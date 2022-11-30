@@ -101,36 +101,22 @@ df <- cbind(stars, nmf_model$w)
 df <- as.data.frame(df)
 ggplot(df, aes(stars, NMF_1, group = stars)) + geom_boxplot()
 
+#PCA - Dimension Reduction
 
-#Creating a bar plot showing the counts for each different emotions
-ggplot(emosum, aes(x = reorder(emotion, -count), y = count))+
-  geom_bar(stat = "identity")
+data(emotions, package = "MASS")
+pca_out <- prcomp (emotions, scale = T)
+pca_out
 
-#Sentiment Analysis using the "bing" lexicon
-bing_word_counts <- text %>% unnest_tokens(output = word, input = review) %>%
-  inner_join(get_sentiments("bing")) %>%
-  count(word, sentiment, sort = TRUE)
+emotions_pc <- pca_out$x
+emotions_pc
 
-#Finding our top words as per the sentiments
-top_word <- bing_word_counts %>%
-  group_by(sentiment) %>%
-  slice_max(order_by = n, n= 30) %>%
-  ungroup() %>%
-  mutate(word = reorder(word,n))
-top_word
+#Running the summary of the PCA dimension reduction - shows cumulative variance explained by the PCA
+summary(pca_out)
 
-#Creating visualization of the positive/negative sentiments
-top_word%>%
-  ggplot(aes(word, n, fill = sentiment)) +
-  geom_col(show.legend = FALSE) +
-  facet_wrap(~sentiment, scales = "free_y") +
-  labs(y = "Contribution to sentiments", x = NULL)+
-  coord_flip()
+#Biplotting to see how the features are related
+par(mar=c(4,4,2,2))
+biplot(pca_out, cex = 0.5, cex.axis = 0.5) #each number is the row in the dataset and the points in the red are the columns
 
-#Visualizing how the positive and negative sentiments are located
-bing_word_counts %>%
-  ggplot(aes(word, n, color = sentiment))+
-  geom_point()
 
 
 cluster_kmeans <- function(data_matrix){
