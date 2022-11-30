@@ -130,19 +130,32 @@ heatmap_visualize()
 
 #PCA - Dimension Reduction
 
-data(emotions, package = "MASS")
-pca_out <- prcomp (emotions, scale = T)
-pca_out
+pca_func <- function (){
+  
+  data(emotions, package = "MASS")
+  pca_out <- prcomp (emotions, scale = T)
+  pca_out
+  return (pca_out)
+}
 
-emotions_pc <- pca_out$x
-emotions_pc
+pca_func()
 
-#Running the summary of the PCA dimension reduction - shows cumulative variance explained by the PCA
-summary(pca_out)
+emofunc<- function(){
+  emotions_pc <- pca_out$x
+  emotions_pc
+  return(emotions_pc)
+}
+
+emofunc
 
 #Biplotting to see how the features are related
-par(mar=c(4,4,2,2))
-biplot(pca_out, cex = 0.5, cex.axis = 0.5) #each number is the row in the dataset and the points in the red are the columns
+visualizing_pca <- function (){
+  par(mar=c(4,4,2,2))
+  biplot(pca_out, cex = 0.5, cex.axis = 0.5) #each number is the row in the dataset and the points in the red are the columns
+  return(biplot)
+}
+
+visualizing_pca ()
 
 
 
