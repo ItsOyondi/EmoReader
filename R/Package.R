@@ -53,18 +53,32 @@ stats(tidy_data)
 text <- tibble(review = str_to_lower(tidy_data$review))
 
 
-# THIS CODE BELOW WILL TAKE LOT OF TIME TO EXECUTE 
-# emotions <- get_nrc_sentiment(text$review)
+sentiments <-function(data) {
+  #Analyzing the sentiments using the syuzhet package
+  
+  text <- tibble(review = str_to_lower(data$review))
+  
+  # THIS CODE BELOW WILL TAKE LOT OF TIME TO EXECUTE 
+  emotions <- get_nrc_sentiment(text$review)
+  return(emotions)
+}
+sentiments(tidy_data)
 
-#adding id to the dataset
-#emotions <- tibble::rowid_to_column(emotions, "id")
-#tidy_data_emotion= tidy_data %>% inner_join(emotions,by="id")
+count_emotions <-function(){
+  #read the amazon emotion csv file
+  emo <- data.table::fread("amazonemotion.csv")
+  #adding id to the dataset
+  #emotions <- tibble::rowid_to_column(emotions, "id")
+  #tidy_data_emotion= tidy_data %>% inner_join(emotions,by="id")
+  
+  #Loading the emotion csv and assigning it into a dataframe
+  emotions <- data.frame(anger = emo$anger, anticipation = emo$anticipation, disgust = emo$disgust, fear = emo$fear, joy = emo$joy, sadness = emo$sadness, surprise = emo$surprise, trust = emo$trust, negative = emo$negative, positive = emo$positive )
+  emosbar <- colSums(emotions)
+  emosum <- data.frame(count = emosbar, emotion = names(emosbar))
+  return(emosum)
+}
 
-#Loading the emotion csv and assigning it into a dataframe
-emo <- read.csv("amazonemotion.csv")
-emotions <- data.frame(anger = emo$anger, anticipation = emo$anticipation, disgust = emo$disgust, fear = emo$fear, joy = emo$joy, sadness = emo$sadness, surprise = emo$surprise, trust = emo$trust, negative = emo$negative, positive = emo$positive )
-emosbar <- colSums(emotions)
-emosum <- data.frame(count = emosbar, emotion = names(emosbar))
+count_emotions()
 
 #building a matrix of emotion dataframe
 my_mat <- as.matrix(emotions)
