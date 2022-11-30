@@ -133,6 +133,52 @@ bing_word_counts %>%
   geom_point()
 
 
+cluster_kmeans <- function(data_matrix){
+
+  dataframe_data=as.data.frame(data_matrix)
+  #clean df
+  c_df = na.omit(dataframe_data)
+  ################################ k-means clustering approach 1
+  #fit the k-means clustering model
+  set.seed(1234) # Setting seed
+  kmeans.re <- kmeans(c_df, centers = 8, nstart = 20)
+  kmeans.re
+
+
+  #identifying the clusters
+  kmeans.re$cluster
+
+  # Confusion Matrix
+  cm <- table(c_df$positive, kmeans.re$cluster)
+  cm
+
+  #evaluate the model and visualize
+  plot(c_df[c("negative", "positive")], col = kmeans.re$cluster,
+       main = "K-means with 5 clusters")
+
+
+  #plot the cluster centers
+  kmeans.re$centers
+  kmeans.re$centers[, c("positive", "negative")]
+
+
+  #visualize the clusters
+  y_kmeans <- kmeans.re$cluster
+  clusplot(c_df[, c("positive", "negative")],
+           y_kmeans,
+           lines = 0,
+           shade = TRUE,
+           color = TRUE,
+           labels = 2,
+           plotchar = FALSE,
+           span = TRUE,
+           main = paste("Cluster Amazon reviews"),
+           xlab = 'positive',
+           ylab = 'negative')
+}
+
+cluster_kmeans(my_mat)
+
 
 
 
