@@ -28,24 +28,24 @@ read_data <- function(csv_file){
   df <- data.frame(id = data$id, star_rating = data$star_rating, review = data$review_body) #convert to a dataframe
   return (df)
 }
-
+# reading the data
 tidy_data <- read_data("amazon.csv")
 
+stats_analysis <- function(data){
+  #Statistical analysis of  the data
+  output <- summary(data)
+  return(output)
+}
+stats_analysis(tidy_data)
 
-#Statistical analysis of  the data
-output <- summary(tidy_data)
-view(output)
-
-# seperating the files by their rating
-Five_star<-tidy_data %>%filter(star_rating==5)
-Four_star<-tidy_data %>% filter(star_rating==4)
-Three_star<-tidy_data %>% filter(star_rating==3)
-Two_star<-tidy_data %>% filter(star_rating==2)
-One_star<-tidy_data %>% filter(star_rating==1)
-
-#Total number of instances having positive and negative reviews
-count_no <- tidy_data %>%
-  count(star_rating)
+stats <- function(data){
+  #Total number of instances having positive and negative reviews
+  count_no <- data %>%
+    count(star_rating)
+  return(count_no)
+}
+  
+stats(tidy_data)
 
 #Analyzing the sentiments using the syuzhet package
 
