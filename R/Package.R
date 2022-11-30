@@ -48,11 +48,6 @@ stats <- function(data){
   
 stats(tidy_data)
 
-#Analyzing the sentiments using the syuzhet package
-
-text <- tibble(review = str_to_lower(tidy_data$review))
-
-
 sentiments <-function(data) {
   #Analyzing the sentiments using the syuzhet package
   
@@ -80,9 +75,13 @@ count_emotions <-function(){
 
 count_emotions()
 
-#building a matrix of emotion dataframe
-my_mat <- as.matrix(emotions)
-my_mat
+matrix_conversion <- function(){
+  #building a matrix of emotion dataframe
+  my_mat <- as.matrix(emotions)
+  my_mat
+  return(my_mat)
+}
+matrix_conversion()
 
 #Saving the matrix as csv
 write.csv(emotions, file ="my_mat.csv",row.names = TRUE)
