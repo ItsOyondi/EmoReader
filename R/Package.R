@@ -83,12 +83,18 @@ matrix_conversion <- function(){
 }
 matrix_conversion()
 
-#Saving the matrix as csv
-write.csv(emotions, file ="my_mat.csv",row.names = TRUE)
+csv_conversion <- function(){
+  #Saving the matrix as csv
+  write.csv(emotions, file ="my_mat.csv",row.names = TRUE) 
+}
+csv_conversion()
 
-#Building the Sparse matrix from the emotions matrix
-sparsematrix <- as(my_mat, "sparseMatrix")
-sparsematrix
+sparse_matrix <- function(){
+  #Building the Sparse matrix from the emotions matrix
+  sparsematrix <- as(my_mat, "sparseMatrix")
+  return(sparsematrix)
+}
+sparse_matrix()
 
 #NMF - Dimension Reduction
 nmf_func <- function(nmfdim){
