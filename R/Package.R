@@ -1,15 +1,17 @@
 #import libraries
-library(dplyr)
-library(stringr)
-library(tidytext)
-library(ggplot2)
-library(tidyr)
-library(syuzhet)
-library(tidyverse)
-library(cluster)    # clustering algorithms
-library(factoextra) # clustering algorithms & visualization
-library(MASS) #dimension reduction
-library(singlet)
+#' @imports dplyr
+#' @imports stringr
+#' @imports tidytext
+#' @imports ggplot2
+#' @imports tidyr
+#' @imports syuzhet
+#' @imports tidyverse
+#' @imports cluster    # clustering algorithms
+#' @imports factoextra # clustering algorithms & visualization
+#' @imports MASS #dimension reduction
+#' @imports singlet
+#' @imports magrittr
+
 
 read_data <- function(csv_file){
 
@@ -30,42 +32,35 @@ read_data <- function(csv_file){
   return (df)
 }
 # reading the data
-tidy_data <- read_data("amazon.csv")
+#tidy_data <- read_data("amazon.csv")
 
 stats_analysis <- function(data){
   #Statistical analysis of  the data
   output <- summary(data)
   return(output)
 }
-stats_analysis(tidy_data)
 
-stats <- function(data){
-  #Total number of instances having positive and negative reviews
-  count_no <- data %>%
-    count(star_rating)
-  return(count_no)
-}
-  
-stats(tidy_data)
 
-sentiments <-function(data) {
-  #Analyzing the sentiments using the syuzhet package
-  
-  text <- tibble(review = str_to_lower(data$review))
-  
-  # THIS CODE BELOW WILL TAKE LOT OF TIME TO EXECUTE 
-  emotions <- get_nrc_sentiment(text$review)
-  return(emotions)
-}
-sentiments(tidy_data)
 
-count_emotions <-function(){
+#stats <- function(data){
+#Total number of instances having positive and negative reviews
+#count_no <- data %>%
+# count(star_rating)
+#return(count_no)
+#}
+
+#stats(tidy_data)
+
+
+#sentiments(tidy_data)
+
+count_emotions <-function(emotion_file){
   #read the amazon emotion csv file
-  emo <- data.table::fread("amazonemotion.csv")
+  emo <- data.table::fread(emotion_file)
   #adding id to the dataset
   #emotions <- tibble::rowid_to_column(emotions, "id")
   #tidy_data_emotion= tidy_data %>% inner_join(emotions,by="id")
-  
+
   #Loading the emotion csv and assigning it into a dataframe
   emotions <- data.frame(anger = emo$anger, anticipation = emo$anticipation, disgust = emo$disgust, fear = emo$fear, joy = emo$joy, sadness = emo$sadness, surprise = emo$surprise, trust = emo$trust, negative = emo$negative, positive = emo$positive )
   emosbar <- colSums(emotions)
@@ -73,108 +68,106 @@ count_emotions <-function(){
   return(emosum)
 }
 
-count_emotions()
 
-matrix_conversion <- function(){
+matrix_conversion <- function(data_file){
+  emo <- data.table::fread(data_file)
+  emotions <- data.frame(anger = emo$anger, anticipation = emo$anticipation, disgust = emo$disgust, fear = emo$fear, joy = emo$joy, sadness = emo$sadness, surprise = emo$surprise, trust = emo$trust, negative = emo$negative, positive = emo$positive )
   #building a matrix of emotion dataframe
   my_mat <- as.matrix(emotions)
-  my_mat
+
+  #Saving the matrix as csv
+  write.csv(emotions, file ="my_mat.csv",row.names = TRUE)
+
   return(my_mat)
 }
-matrix_conversion()
 
-csv_conversion <- function(){
-  #Saving the matrix as csv
-  write.csv(emotions, file ="my_mat.csv",row.names = TRUE) 
-}
-csv_conversion()
+
 
 sparse_matrix <- function(){
+  my_mat = matrix_conversion(data_file = "amazonemotion.csv")
   #Building the Sparse matrix from the emotions matrix
   sparsematrix <- as(my_mat, "sparseMatrix")
   return(sparsematrix)
 }
-sparse_matrix()
 
+
+#nmf
 #NMF - Dimension Reduction
 nmf_func <- function(nmfdim){
-  data_nmf <- ard_nmf(sparsematrix)
+  sparsematrix = sparse_matrix()
+  data_nmf <- run_nmf(sparsematrix, nmfdim) #nmfdim = rank
   hist(sparsematrix@x)
   plot(density(sparsematrix@x))
 
   return(plot)
 }
 
-nmf_func(nmfdata)
 
 #Normalizing the data
 
 norm_fun <- function(){
-  norm_data <- sparsematrix
+  norm_data <- sparse_matrix()
   norm_data <- Seurat::LogNormalize(norm_data)
   return(norm_data)
 }
-norm_fun()
 
-modeling_nmf <- function(){
-  nmf_model <- ard_nmf(norm_data)
+
+modeling_nmf <- function(rank){
+  norm_data <- sparse_matrix()
+  nmf_model <- run_nmf(norm_data, rank=rank)
   str(nmf_model)
-  str(sparsematrix)
-  return (str)
+  return (nmf_model)
 }
 
-modeling_nmf()
+#create a hteamap for the nmf model
 
 heatmap_visualize <- function(){
+  nmf_model = modeling_nmf(3)
+  sparsematrix = sparse_matrix()
   h <- nmf_model$h
   colnames(nmf_model$h) <- colnames(sparsematrix)
-  heatmap(h)
-  return(heat)
+  return(heatmap(h))
 }
 
-heatmap_visualize()
 
 #PCA - Dimension Reduction
 
 pca_func <- function (){
-  
-  data(emotions, package = "MASS")
+
+  emo <- data.table::fread("amazonemotion.csv")
+  emotions <- data.frame(anger = emo$anger, anticipation = emo$anticipation, disgust = emo$disgust, fear = emo$fear, joy = emo$joy, sadness = emo$sadness, surprise = emo$surprise, trust = emo$trust, negative = emo$negative, positive = emo$positive )
+
+  #data(emotions, package = "MASS")
   pca_out <- prcomp (emotions, scale = T)
-  pca_out
   return (pca_out)
 }
 
-pca_func()
 
-emofunc<- function(){
-  emotions_pc <- pca_out$x
-  emotions_pc
-  return(emotions_pc)
-}
-
-emofunc
+#emofunc<- function(){
+#  emotions_pc <- pca_out$x
+ # emotions_pc
+ # return(emotions_pc)
+#}
 
 #Biplotting to see how the features are related
 visualizing_pca <- function (){
+  pca_out = pca_func()
   par(mar=c(4,4,2,2))
   biplot(pca_out, cex = 0.5, cex.axis = 0.5) #each number is the row in the dataset and the points in the red are the columns
   return(biplot)
 }
-
-visualizing_pca ()
-
-
+set.seed(1234) # Setting seed
 
 cluster_kmeans <- function(data_matrix){
-  #reference
-  #https://www.geeksforgeeks.org/k-means-clustering-in-r-programming/
+
+  ##reference https://www.geeksforgeeks.org/k-means-clustering-in-r-programming/
   dataframe_data=as.data.frame(data_matrix)
   #clean df
   c_df = na.omit(dataframe_data)
   ################################ k-means clustering approach 1
   #fit the k-means clustering model
-  set.seed(1234) # Setting seed
-  kmeans.re <- kmeans(c_df, centers = 5, nstart = 20)
+  kmeans.re <- kmeans(c_df, centers = 5, nstart = 20, iter.max = 100)
+  if (kmeans.re$ifault==4) { kmeans.re = kmeans(c_df, kmeans.re$centers, algorithm="MacQueen") }
   kmeans.re
 
 
@@ -183,7 +176,6 @@ cluster_kmeans <- function(data_matrix){
 
   # Confusion Matrix
   cm <- table(c_df$positive, kmeans.re$cluster)
-  cm
 
   #evaluate the model and visualize
   plot(c_df[c("negative", "positive")], col = kmeans.re$cluster,
@@ -207,10 +199,11 @@ cluster_kmeans <- function(data_matrix){
            span = TRUE,
            main = paste("Cluster Amazon reviews"),
            xlab = 'positive',
-           ylab = 'negative', cex=1)
+           ylab = 'negative')
 }
 
-cluster_kmeans(my_mat)
+
+
 
 
 
