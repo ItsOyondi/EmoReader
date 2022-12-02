@@ -204,6 +204,30 @@ cluster_kmeans <- function(data_matrix){
 
 
 
+# Hierarchical Clustering 
+h_cluster<- function(emo){
+  #normailizaing the data
+  emo_data_sc <- as.data.frame(scale(emo))
+  
+  #transposing the data
+  dist_mat_emo <- dist(t(emo_data_sc))
+  
+  
+  #Hierarchical Clustering
+  hclust_avg_emo <- hclust(dist_mat_emo, method = 'average')
+  
+  
+  #Cutting the tree at 3
+  cut_clust_norm <- cutree(hclust_avg_emo, k = 3)
+  
+  
+  plot(hclust_avg_emo)
+  #seperating the cluster by color
+  rect.hclust(hclust_avg_emo , k = 3, border = 2:6)
+  abline(h = 280, col = 'red')# cutting line for the cluster.
+  
+  
+}
 
 
 
