@@ -4,8 +4,10 @@ Title: What the Package Does (Title Case)
 Version: 0.1.0
 Author: Diskha Shrestha, Roshan Shrestha, Josephat Oyondi, Akhila
 Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
+Description: The EmoReader package is created to analyze the sentiments of the reviews from the user which is then converted to 10 different emotions from the reviews. Text mining is performed through this package to find out the important words that provide meaningful information about the reviews that the products receive. Furthermore, it can also be used for a text document to find  different emotions involved.
+    The package seggregates the review into 10 emotion using the get_nrc_sentiment function and scores them accordingly as per the emotion that occurs.
+
     Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+License: Our project is licensed under the MIT license.
 Encoding: UTF-8
 LazyData: true
