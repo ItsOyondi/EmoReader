@@ -13,17 +13,17 @@
 #' @imports magrittr
 #' @imports tibble
 #'
-# library(dplyr)
-# library(stringr)
-# library(tidytext)
-# library(ggplot2)
-# library(tidyr)
-# library(syuzhet)
-# library(tidyverse)
-# library(cluster)    # clustering algorithms
-# library(factoextra) # clustering algorithms & visualization
-# library(MASS) #dimension reduction
-# library(singlet)
+library(dplyr)
+library(stringr)
+library(tidytext)
+library(ggplot2)
+library(tidyr)
+library(syuzhet)
+library(tidyverse)
+library(cluster)    # clustering algorithms
+library(factoextra) # clustering algorithms & visualization
+library(MASS) #dimension reduction
+library(singlet)
 
 read_data <- function(csv_file){
 
@@ -51,14 +51,18 @@ amazon_data <- read_data('small.csv')
 
 
 
+
 get_emotion <- function(csv_file){
+  library(syuzhet)
   csv_file$review <- tolower(csv_file$review)
   emotions <- get_nrc_sentiment(csv_file$review)
   return (emotions)
 }
 
-
 emo_mat <- get_emotion(amazon_data)
+
+# write.csv(emo_mat,"amazonemotion1.csv", row.names = TRUE)
+# emo_mat <- get_emotion(amazon_data)
 
 
 
@@ -85,27 +89,25 @@ emo_mat <- get_emotion(amazon_data)
 
 #sentiments(tidy_data)
 
-count_emotions <-function(emotion_file){
-  #Getting the total frequency of the ten emotions
-  emotions <- as.matrix(emotion_file)
-  emosbar <- colSums(emotions)
-  emosum <- data.frame(count = emosbar, emotion = names(emosbar))
-  return(emosum)
-}
+# count_emotions <-function(emotion_file){
+#   #Getting the total frequency of the ten emotions
+#   emo_sum <- as.matrix(emotion_file)
+#   emosbar <- colSums(emo_sum)
+#   emosum <- data.frame(count = emosbar, emotion = names(emosbar))
+#   return(emosum)
+# }
 
-emo_sum <- count_emotions(emo_mat)
+# emo_sum <- count_emotions(emo_mat)
 
 
 matrix_conversion <- function(data_file){
   #building a matrix of emotion dataframe
-  my_mat <- as.matrix(emotions)
+  my_mat <- as.matrix(data_file)
   return(my_mat)
 }
 
 
 sparse_matrix <- function(){
-  amazon_data <- read_data('small.csv')
-  emo_mat <- get_emotion(amazon_data)
   my_mat = matrix_conversion(data_file = emo_mat)
   #Building the Sparse matrix from the emotions matrix
   sparsematrix <- as(my_mat, "sparseMatrix")
@@ -152,8 +154,6 @@ heatmap_visualize <- function(){
 
 #PCA - Dimension Reduction
 pca_func <- function (){
-  amazon_data <- read_data('small.csv')
-  emo_mat <- get_emotion(amazon_data)
   #data(emotions, package = "MASS")
   pca_out <- prcomp (emo_mat, scale = T)
   return (pca_out)
@@ -180,7 +180,7 @@ cluster_kmeans <- function(data_matrix){
   c_df = na.omit(dataframe_data)
   ################################ k-means clustering approach 1
   #fit the k-means clustering model
-  kmeans.re <- kmeans(c_df, centers = 5, nstart = 20, iter.max = 100)
+  kmeans.re <- kmeans(c_df, centers = 5, nstart = 20)
   if (kmeans.re$ifault==4) { kmeans.re = kmeans(c_df, kmeans.re$centers, algorithm="MacQueen") }
   kmeans.re
 
@@ -242,7 +242,6 @@ h_cluster<- function(emo){
 
 
 }
-
 
 
 
