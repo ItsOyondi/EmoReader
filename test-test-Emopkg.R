@@ -1,7 +1,16 @@
 test_that("reading data", {
-  expected <- read_data(csv_file = "amazon.csv")
+  expected <- read_data(csv_file = "small.csv")
   expect_s3_class(expected, "data.frame")
 })
+
+# test_that("Creating Emotions", {
+#   library(syuzhet)
+#   expected <- read_data(csv_file = "small.csv")
+#   expect_error(get_emotion(expected), NA)
+#
+# })
+
+
 
 test_that("Count Emotions", {
   val <- count_emotions(emotion_file = "amazonemotion.csv")
