@@ -11,7 +11,19 @@
 #' @imports MASS #dimension reduction
 #' @imports singlet
 #' @imports magrittr
-
+#' @imports tibble
+#'
+# library(dplyr)
+# library(stringr)
+# library(tidytext)
+# library(ggplot2)
+# library(tidyr)
+# library(syuzhet)
+# library(tidyverse)
+# library(cluster)    # clustering algorithms
+# library(factoextra) # clustering algorithms & visualization
+# library(MASS) #dimension reduction
+# library(singlet)
 
 read_data <- function(csv_file){
 
@@ -29,17 +41,36 @@ read_data <- function(csv_file){
   data$review_body <- gsub("i'm"," I am",data$review)
 
   df <- data.frame(id = data$id, star_rating = data$star_rating, review = data$review_body) #convert to a dataframe
+
   return (df)
 }
 # reading the data
 #tidy_data <- read_data("amazon.csv")
 
-stats_analysis <- function(data){
-  #Statistical analysis of  the data
-  output <- summary(data)
-  return(output)
+amazon_data <- read_data('small.csv')
+
+
+
+get_emotion <- function(csv_file){
+  csv_file$review <- tolower(csv_file$review)
+  emotions <- get_nrc_sentiment(csv_file$review)
+  return (emotions)
 }
 
+
+emo_mat <- get_emotion(amazon_data)
+
+
+
+
+
+# stats_analysis <- function(data){
+#   #Statistical analysis of  the data
+#   output <- summary(data)
+#   return(output)
+# }
+
+# stats_analysis(data_df)
 
 
 #stats <- function(data){
@@ -55,43 +86,33 @@ stats_analysis <- function(data){
 #sentiments(tidy_data)
 
 count_emotions <-function(emotion_file){
-  #read the amazon emotion csv file
-  emo <- data.table::fread(emotion_file)
-  #adding id to the dataset
-  #emotions <- tibble::rowid_to_column(emotions, "id")
-  #tidy_data_emotion= tidy_data %>% inner_join(emotions,by="id")
-
-  #Loading the emotion csv and assigning it into a dataframe
-  emotions <- data.frame(anger = emo$anger, anticipation = emo$anticipation, disgust = emo$disgust, fear = emo$fear, joy = emo$joy, sadness = emo$sadness, surprise = emo$surprise, trust = emo$trust, negative = emo$negative, positive = emo$positive )
+  #Getting the total frequency of the ten emotions
+  emotions <- as.matrix(emotion_file)
   emosbar <- colSums(emotions)
   emosum <- data.frame(count = emosbar, emotion = names(emosbar))
   return(emosum)
 }
 
+emo_sum <- count_emotions(emo_mat)
+
 
 matrix_conversion <- function(data_file){
-  emo <- data.table::fread(data_file)
-  emotions <- data.frame(anger = emo$anger, anticipation = emo$anticipation, disgust = emo$disgust, fear = emo$fear, joy = emo$joy, sadness = emo$sadness, surprise = emo$surprise, trust = emo$trust, negative = emo$negative, positive = emo$positive )
   #building a matrix of emotion dataframe
   my_mat <- as.matrix(emotions)
-
-  #Saving the matrix as csv
-  write.csv(emotions, file ="my_mat.csv",row.names = TRUE)
-
   return(my_mat)
 }
 
 
-
 sparse_matrix <- function(){
-  my_mat = matrix_conversion(data_file = "amazonemotion.csv")
+  amazon_data <- read_data('small.csv')
+  emo_mat <- get_emotion(amazon_data)
+  my_mat = matrix_conversion(data_file = emo_mat)
   #Building the Sparse matrix from the emotions matrix
   sparsematrix <- as(my_mat, "sparseMatrix")
   return(sparsematrix)
 }
 
 
-#nmf
 #NMF - Dimension Reduction
 nmf_func <- function(nmfdim){
   sparsematrix = sparse_matrix()
@@ -115,7 +136,6 @@ norm_fun <- function(){
 modeling_nmf <- function(rank){
   norm_data <- sparse_matrix()
   nmf_model <- run_nmf(norm_data, rank=rank)
-  str(nmf_model)
   return (nmf_model)
 }
 
@@ -131,23 +151,15 @@ heatmap_visualize <- function(){
 
 
 #PCA - Dimension Reduction
-
 pca_func <- function (){
-
-  emo <- data.table::fread("amazonemotion.csv")
-  emotions <- data.frame(anger = emo$anger, anticipation = emo$anticipation, disgust = emo$disgust, fear = emo$fear, joy = emo$joy, sadness = emo$sadness, surprise = emo$surprise, trust = emo$trust, negative = emo$negative, positive = emo$positive )
-
+  amazon_data <- read_data('small.csv')
+  emo_mat <- get_emotion(amazon_data)
   #data(emotions, package = "MASS")
-  pca_out <- prcomp (emotions, scale = T)
+  pca_out <- prcomp (emo_mat, scale = T)
   return (pca_out)
 }
 
 
-#emofunc<- function(){
-#  emotions_pc <- pca_out$x
- # emotions_pc
- # return(emotions_pc)
-#}
 
 #Biplotting to see how the features are related
 visualizing_pca <- function (){
@@ -156,6 +168,8 @@ visualizing_pca <- function (){
   biplot(pca_out, cex = 0.5, cex.axis = 0.5) #each number is the row in the dataset and the points in the red are the columns
   return(biplot)
 }
+
+
 set.seed(1234) # Setting seed
 
 cluster_kmeans <- function(data_matrix){
@@ -204,30 +218,31 @@ cluster_kmeans <- function(data_matrix){
 
 
 
-# Hierarchical Clustering 
+# Hierarchical Clustering
 h_cluster<- function(emo){
   #normailizaing the data
   emo_data_sc <- as.data.frame(scale(emo))
-  
+
   #transposing the data
   dist_mat_emo <- dist(t(emo_data_sc))
-  
-  
+
+
   #Hierarchical Clustering
   hclust_avg_emo <- hclust(dist_mat_emo, method = 'average')
-  
-  
+
+
   #Cutting the tree at 3
   cut_clust_norm <- cutree(hclust_avg_emo, k = 3)
-  
-  
+
+
   plot(hclust_avg_emo)
   #seperating the cluster by color
   rect.hclust(hclust_avg_emo , k = 3, border = 2:6)
   abline(h = 280, col = 'red')# cutting line for the cluster.
-  
-  
+
+
 }
+
 
 
 
