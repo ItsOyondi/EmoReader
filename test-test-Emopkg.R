@@ -3,19 +3,19 @@ test_that("reading data", {
   expect_s3_class(expected, "data.frame")
 })
 
-# test_that("Creating Emotions", {
-#   library(syuzhet)
-#   expected <- read_data(csv_file = "small.csv")
-#   expect_error(get_emotion(expected), NA)
-#
-# })
+test_that("Creating Emotions", {
 
+  expected <- read_data(csv_file = "small.csv")
+  expect_error(get_emotion(expected), NA)
 
-
-test_that("Count Emotions", {
-  val <- count_emotions(emotion_file = "amazonemotion.csv")
-  expect_equal(dim(val), c(10,2))
 })
+
+
+
+# test_that("Count Emotions", {
+#   val <- count_emotions(emotion_file = "amazonemotion.csv")
+#   expect_equal(dim(val), c(10,2))
+# })
 
 test_that("converting data to a matrix", {
   e_val <- matrix_conversion(data_file = "amazonemotion.csv")
@@ -27,6 +27,7 @@ test_that("Creating a sparsematrix", {
 
 })
 test_that("NMF dimention reduction", {
+  library(singlet)
   expect_error(nmf_func(nmfdim = 3), NA)
 
 })
@@ -56,6 +57,12 @@ test_that("visualizing pca", {
 
 test_that("kmeans clustering", {
   library(cluster)
-  my_mat = matrix_conversion(data_file = "amazonemotion.csv")
-  expect_error(cluster_kmeans(my_mat), NA)
+  mymat = matrix_conversion(data_file = "amazonemotion.csv")
+  expect_error(cluster_kmeans(mymat), NA)
+})
+
+
+test_that("H clustering", {
+  expected <- read_data(csv_file = "amazonemotion.csv")
+  expect_error(h_cluster(expected), NA)
 })
