@@ -11,11 +11,10 @@ test_that("Creating Emotions", {
 })
 
 
-
-# test_that("Count Emotions", {
-#   val <- count_emotions(emotion_file = "amazonemotion.csv")
-#   expect_equal(dim(val), c(10,2))
-# })
+test_that("Count Emotions", {
+  val <- count_emotions("emo_mat.csv")
+  expect_equal(dim(val), c(10,2))
+})
 
 test_that("converting data to a matrix", {
   e_val <- matrix_conversion(data_file = "amazonemotion.csv")
@@ -56,13 +55,12 @@ test_that("visualizing pca", {
 
 
 test_that("kmeans clustering", {
-  library(cluster)
-  mymat = matrix_conversion(data_file = "amazonemotion.csv")
-  expect_error(cluster_kmeans(mymat), NA)
+  expected <- read.csv("emo_mat.csv")
+  expect_error(cluster_kmeans(expected), NA)
 })
 
 
 test_that("H clustering", {
-  expected <- read_data(csv_file = "amazonemotion.csv")
+  expected <- read.csv("emo_mat.csv")
   expect_error(h_cluster(expected), NA)
 })
