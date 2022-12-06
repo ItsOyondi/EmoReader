@@ -1,18 +1,20 @@
 test_that("reading data", {
-  expected <- read_data(csv_file = "small.csv")
+  expected <- read_input_csv_data(csv_file = "small.csv")
   expect_s3_class(expected, "data.frame")
 })
 
 test_that("Creating Emotions", {
 
-  expected <- read_data(csv_file = "small.csv")
+  expected <- read_input_csv_data(csv_file = "small.csv")
   expect_error(get_emotion(expected), NA)
 
 })
 
 
 test_that("Count Emotions", {
-  val <- count_emotions("emo_mat.csv")
+  library(Matrix)
+  expected <- read.csv("emo_mat.csv")
+  val <- count_emotions(expected)
   expect_equal(dim(val), c(10,2))
 })
 
@@ -22,7 +24,8 @@ test_that("converting data to a matrix", {
 })
 
 test_that("Creating a sparsematrix", {
-  expect_error(sparse_matrix(), NA)
+  library(Matrix)
+  expect_error(convert_to_sparse_matrix(), NA)
 
 })
 test_that("NMF dimention reduction", {
@@ -32,7 +35,7 @@ test_that("NMF dimention reduction", {
 })
 
 test_that("normalizing the data", {
-  expect_error(norm_fun(),NA)
+  expect_error(norm_sparse_matrix(),NA)
 })
 
 test_that("Modeling nmf", {
@@ -55,6 +58,7 @@ test_that("visualizing pca", {
 
 
 test_that("kmeans clustering", {
+  library(cluster)
   expected <- read.csv("emo_mat.csv")
   expect_error(cluster_kmeans(expected), NA)
 })
