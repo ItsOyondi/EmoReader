@@ -41,7 +41,7 @@ read_data <- function(csv_file){
   data$review_body <- gsub("'ve"," have",data$review)
   data$review_body <- gsub("i'm"," I am",data$review)
 
-  df <- data.frame(id = data$id, star_rating = data$star_rating, review = data$review_body) #convert to a dataframe
+  df <- data.frame(star_rating = data$star_rating, review = data$review_body) #convert to a dataframe
 
   return (df)
 }
