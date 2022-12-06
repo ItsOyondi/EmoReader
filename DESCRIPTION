@@ -4,8 +4,8 @@ Title: Analyzing the emotions from the review of the Electronics Product
 Version: 0.1.0
 Author: Diskha Shrestha, Roshan Shrestha, Josephat Oyondi, Akhila
 Maintainer: <diksha.shrestha775@gmail.com>
-Description: The EmoReader package is created to analyze the sentiments of the reviews from the user which is then converted to 10 different emotions from the reviews. Text mining is performed through this package to find out the important words that provide meaningful information about the reviews of the products. Furthermore, it can also be used for any text document to find  different emotions involved.
-    The package seggregates the review into 10 emotion using the get_nrc_sentiment function and scores them accordingly as per the emotion that occurs. The package also runs the two different dimension reduction and clustering on the emotions to know which one of the method performs accurately in clustering different emotions.
+Description: The EmoReader package is created to analyze the sentiments of the reviews from the user and the get_emotion function provides 10 different emotion from the reviews and scoring them into different emotions accordingly. Text mining is performed through this package to find out the important words that provide meaningful information about the reviews of the products. 
+    The package also runs the two different dimension reduction through nmf_func and pca_func to know which dimension reduction provides accurate information. Also, the cluster_kmeans function and h_cluster function runs two different clustering to know which method performs accurately in clustering different emotions.
 License: Our project is licensed under the MIT license.
 Encoding: UTF-8
 LazyData: true
