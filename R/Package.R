@@ -12,7 +12,7 @@
 #' @imports singlet
 #' @imports magrittr
 #' @imports tibble
-#'
+#' @import  Matrix
 
 
 # library(dplyr)
@@ -26,9 +26,25 @@
 # library(MASS) #dimension reduction
 # library(singlet)
 # library(dendextend)
+# library(Matrix)
 
 
-read_data <- function(csv_file){
+
+read_inbuilt_data <- function(data){
+
+  data$review <- gsub("shouldn't","should not",data$review)
+  data$review <- gsub("didn't","did not",data$review)
+  data$review <- gsub("don't","do not",data$review)
+  data$review <- gsub("can't","can not",data$review)
+  data$review <- gsub("couldn't","could not",data$review)
+  data$review <- gsub("'ll"," will",data$review)
+  data$review <- gsub("'ve"," have",data$review)
+  data$review <- gsub("i'm"," I am",data$review)
+
+  return (data)
+}
+
+read_input_csv_data <- function(csv_file){
 
   data = data.table::fread(csv_file)
 
@@ -46,11 +62,9 @@ read_data <- function(csv_file){
   return (df)
 }
 
-amazon_data <- read_data('small.csv')
+amazon_data <- read_input_csv_data('small.csv')
 
 
-
-# Reference: https://medium.com/swlh/exploring-sentiment-analysis-a6b53b026131
 get_emotion <- function(csv_file){
   library(syuzhet)
   csv_file$review <- tolower(csv_file$review)
@@ -63,14 +77,12 @@ emo_mat <- get_emotion(amazon_data)
 
 count_emotions <-function(emotion_file){
   #Getting the total frequency of the ten emotions
-  a <- read.csv(emotion_file)
-  emo_sum <- as.matrix(a)
-  emosbar <- colSums(emo_sum)
+  emosbar <- colSums(emotion_file)
   emosum <- data.frame(count = emosbar, emotion = names(emosbar))
   return(emosum)
 }
 
-#Reference: https://statisticsglobe.com/convert-data-frame-to-matrix-in-r
+
 matrix_conversion <- function(data_file){
   #building a matrix of emotion dataframe
   my_mat <- as.matrix(data_file)
@@ -78,7 +90,7 @@ matrix_conversion <- function(data_file){
 }
 
 
-sparse_matrix <- function(){
+convert_to_sparse_matrix <- function(){
   my_mat = matrix_conversion(data_file = emo_mat)
   #Building the Sparse matrix from the emotions matrix
   sparsematrix <- as(my_mat, "sparseMatrix")
@@ -87,9 +99,8 @@ sparse_matrix <- function(){
 
 
 #NMF - Dimension Reduction
-#Reference: https://satijalab.org/seurat/articles/dim_reduction_vignette.html
 nmf_func <- function(nmfdim){
-  sparsematrix = sparse_matrix()
+  sparsematrix = convert_to_sparse_matrix()
   data_nmf <- run_nmf(sparsematrix, nmfdim) #nmfdim = rank
   hist(sparsematrix@x)
   plot(density(sparsematrix@x))
@@ -99,16 +110,15 @@ nmf_func <- function(nmfdim){
 
 
 #Normalizing the data
-#Reference: https://satijalab.org/seurat/articles/dim_reduction_vignette.html
-norm_fun <- function(){
-  norm_data <- sparse_matrix()
+norm_sparse_matrix <- function(){
+  norm_data <- convert_to_sparse_matrix()
   norm_data <- Seurat::LogNormalize(norm_data)
   return(norm_data)
 }
 
 
 modeling_nmf <- function(rank){
-  norm_data <- sparse_matrix()
+  norm_data <- convert_to_sparse_matrix()
   nmf_model <- run_nmf(norm_data, rank=rank)
   return (nmf_model)
 }
@@ -117,7 +127,7 @@ modeling_nmf <- function(rank){
 #create a hteamap for the nmf model
 heatmap_visualize <- function(){
   nmf_model = modeling_nmf(3)
-  sparsematrix = sparse_matrix()
+  sparsematrix = convert_to_sparse_matrix()
   h <- nmf_model$h
   colnames(nmf_model$h) <- colnames(sparsematrix)
   return(heatmap(h))
@@ -125,7 +135,6 @@ heatmap_visualize <- function(){
 
 
 #PCA - Dimension Reduction
-#Reference: https://rpubs.com/JanpuHou/278584
 pca_func <- function (){
   #data(emotions, package = "MASS")
   pca_out <- prcomp (emo_mat, scale = T)
@@ -135,7 +144,6 @@ pca_func <- function (){
 
 
 #Biplotting to see how the features are related
-#Reference: https://rpubs.com/JanpuHou/278584
 visualizing_pca <- function (){
   pca_out = pca_func()
   par(mar=c(4,4,2,2))
@@ -155,7 +163,7 @@ cluster_kmeans <- function(data_matrix){
   ################################ k-means clustering approach 1
   #fit the k-means clustering model
   kms <- kmeans(c_df, centers = 5, nstart = 20)
-  if (kms$ifault==4) { kms = kmeans(c_df, kmeans.re$centers, algorithm="MacQueen") }
+  if (kms$ifault==4) { kms = kmeans(c_df, kms$centers, algorithm="MacQueen") }
   #kms
 
 
