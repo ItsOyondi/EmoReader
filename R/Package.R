@@ -50,7 +50,7 @@ amazon_data <- read_data('small.csv')
 
 
 
-
+# Reference: https://medium.com/swlh/exploring-sentiment-analysis-a6b53b026131
 get_emotion <- function(csv_file){
   library(syuzhet)
   csv_file$review <- tolower(csv_file$review)
@@ -70,7 +70,7 @@ count_emotions <-function(emotion_file){
   return(emosum)
 }
 
-
+#Reference: https://statisticsglobe.com/convert-data-frame-to-matrix-in-r
 matrix_conversion <- function(data_file){
   #building a matrix of emotion dataframe
   my_mat <- as.matrix(data_file)
@@ -87,6 +87,7 @@ sparse_matrix <- function(){
 
 
 #NMF - Dimension Reduction
+#Reference: https://satijalab.org/seurat/articles/dim_reduction_vignette.html
 nmf_func <- function(nmfdim){
   sparsematrix = sparse_matrix()
   data_nmf <- run_nmf(sparsematrix, nmfdim) #nmfdim = rank
@@ -98,6 +99,7 @@ nmf_func <- function(nmfdim){
 
 
 #Normalizing the data
+#Reference: https://satijalab.org/seurat/articles/dim_reduction_vignette.html
 norm_fun <- function(){
   norm_data <- sparse_matrix()
   norm_data <- Seurat::LogNormalize(norm_data)
@@ -123,6 +125,7 @@ heatmap_visualize <- function(){
 
 
 #PCA - Dimension Reduction
+#Reference: https://rpubs.com/JanpuHou/278584
 pca_func <- function (){
   #data(emotions, package = "MASS")
   pca_out <- prcomp (emo_mat, scale = T)
@@ -132,6 +135,7 @@ pca_func <- function (){
 
 
 #Biplotting to see how the features are related
+#Reference: https://rpubs.com/JanpuHou/278584
 visualizing_pca <- function (){
   pca_out = pca_func()
   par(mar=c(4,4,2,2))
