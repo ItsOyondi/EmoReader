@@ -13,23 +13,24 @@
 #' @imports magrittr
 #' @imports tibble
 #'
-library(dplyr)
-library(stringr)
-library(tidytext)
-library(ggplot2)
-library(tidyr)
-library(syuzhet)
-library(tidyverse)
-library(cluster)    # clustering algorithms
-library(factoextra) # clustering algorithms & visualization
-library(MASS) #dimension reduction
-library(singlet)
+
+
+# library(dplyr)
+# library(stringr)
+# library(ggplot2)
+# library(tidyr)
+# library(syuzhet)
+# library(tidyverse)
+# library(cluster)    # clustering algorithms
+# library(factoextra) # clustering algorithms & visualization
+# library(MASS) #dimension reduction
+# library(singlet)
+# library(dendextend)
+
 
 read_data <- function(csv_file){
 
   data = data.table::fread(csv_file)
-
-  data <- tibble::rowid_to_column(data, "id")
 
   data$review_body <- gsub("shouldn't","should not",data$review_body)
   data$review_body <- gsub("didn't","did not",data$review_body)
@@ -44,8 +45,6 @@ read_data <- function(csv_file){
 
   return (df)
 }
-# reading the data
-#tidy_data <- read_data("amazon.csv")
 
 amazon_data <- read_data('small.csv')
 
@@ -61,43 +60,15 @@ get_emotion <- function(csv_file){
 
 emo_mat <- get_emotion(amazon_data)
 
-# write.csv(emo_mat,"amazonemotion1.csv", row.names = TRUE)
-# emo_mat <- get_emotion(amazon_data)
 
-
-
-
-
-# stats_analysis <- function(data){
-#   #Statistical analysis of  the data
-#   output <- summary(data)
-#   return(output)
-# }
-
-# stats_analysis(data_df)
-
-
-#stats <- function(data){
-#Total number of instances having positive and negative reviews
-#count_no <- data %>%
-# count(star_rating)
-#return(count_no)
-#}
-
-#stats(tidy_data)
-
-
-#sentiments(tidy_data)
-
-# count_emotions <-function(emotion_file){
-#   #Getting the total frequency of the ten emotions
-#   emo_sum <- as.matrix(emotion_file)
-#   emosbar <- colSums(emo_sum)
-#   emosum <- data.frame(count = emosbar, emotion = names(emosbar))
-#   return(emosum)
-# }
-
-# emo_sum <- count_emotions(emo_mat)
+count_emotions <-function(emotion_file){
+  #Getting the total frequency of the ten emotions
+  a <- read.csv(emotion_file)
+  emo_sum <- as.matrix(a)
+  emosbar <- colSums(emo_sum)
+  emosum <- data.frame(count = emosbar, emotion = names(emosbar))
+  return(emosum)
+}
 
 
 matrix_conversion <- function(data_file){
@@ -127,7 +98,6 @@ nmf_func <- function(nmfdim){
 
 
 #Normalizing the data
-
 norm_fun <- function(){
   norm_data <- sparse_matrix()
   norm_data <- Seurat::LogNormalize(norm_data)
@@ -141,8 +111,8 @@ modeling_nmf <- function(rank){
   return (nmf_model)
 }
 
-#create a hteamap for the nmf model
 
+#create a hteamap for the nmf model
 heatmap_visualize <- function(){
   nmf_model = modeling_nmf(3)
   sparsematrix = sparse_matrix()
@@ -180,29 +150,29 @@ cluster_kmeans <- function(data_matrix){
   c_df = na.omit(dataframe_data)
   ################################ k-means clustering approach 1
   #fit the k-means clustering model
-  kmeans.re <- kmeans(c_df, centers = 5, nstart = 20)
-  if (kmeans.re$ifault==4) { kmeans.re = kmeans(c_df, kmeans.re$centers, algorithm="MacQueen") }
-  kmeans.re
+  kms <- kmeans(c_df, centers = 5, nstart = 20)
+  if (kms$ifault==4) { kms = kmeans(c_df, kmeans.re$centers, algorithm="MacQueen") }
+  #kms
 
 
   #identifying the clusters
-  kmeans.re$cluster
+  kms$cluster
 
   # Confusion Matrix
-  cm <- table(c_df$positive, kmeans.re$cluster)
+  cm <- table(c_df$positive, kms$cluster)
 
   #evaluate the model and visualize
-  plot(c_df[c("negative", "positive")], col = kmeans.re$cluster,
+  plot(c_df[c("negative", "positive")], col = kms$cluster,
        main = "K-means with 5 clusters")
 
 
   #plot the cluster centers
-  kmeans.re$centers
-  kmeans.re$centers[, c("positive", "negative")]
+  kms$centers
+  kms$centers[, c("positive", "negative")]
 
 
   #visualize the clusters
-  y_kmeans <- kmeans.re$cluster
+  y_kmeans <- kms$cluster
   clusplot(c_df[, c("positive", "negative")],
            y_kmeans,
            lines = 0,
@@ -219,6 +189,7 @@ cluster_kmeans <- function(data_matrix){
 
 
 # Hierarchical Clustering
+# https://www.datacamp.com/tutorial/hierarchical-clustering-R
 h_cluster<- function(emo){
   #normailizaing the data
   emo_data_sc <- as.data.frame(scale(emo))
