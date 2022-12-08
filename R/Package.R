@@ -1,35 +1,44 @@
 #import libraries
-#' @imports dplyr
-#' @imports stringr
-#' @imports tidytext
-#' @imports ggplot2
-#' @imports tidyr
-#' @imports syuzhet
-#' @imports tidyverse
-#' @imports cluster    # clustering algorithms
-#' @imports factoextra # clustering algorithms & visualization
-#' @imports MASS #dimension reduction
-#' @imports singlet
-#' @imports magrittr
-#' @imports tibble
-#' @import  Matrix
+#' @import dplyr
+#' @import tringr
+#' @import tidytext
+#' @import ggplot2
+#' @import tidyr
+#' @import syuzhet
+#' @import tidyverse
+#' @import cluster    # clustering algorithms
+#' @import factoextra # clustering algorithms & visualization
+#' @import MASS #dimension reduction
+#' @import singlet
+#' @import magrittr
+#' @import tibble
+#' @import Matrix
 
 
-# library(dplyr)
-# library(stringr)
-# library(ggplot2)
-# library(tidyr)
-# library(syuzhet)
-# library(tidyverse)
-# library(cluster)    # clustering algorithms
-# library(factoextra) # clustering algorithms & visualization
-# library(MASS) #dimension reduction
-# library(singlet)
-# library(dendextend)
-# library(Matrix)
+library(dplyr)
+library(stringr)
+library(ggplot2)
+library(tidyr)
+library(syuzhet)
+library(tidyverse)
+library(cluster)    # clustering algorithms
+library(factoextra) # clustering algorithms & visualization
+library(MASS) #dimension reduction
+library(singlet)
+library(dendextend)
+library(Matrix)
 
 
-
+#' @title Read inbuilt data set
+#' @name read_inbuilt_data(data)
+#' @param data a csv file
+#' @return A data frame
+#' @examples read_inbuilt_data("small.csv")
+#' @description The function read_inbuilt_data is used for reading our data set.
+#' Before beginning data analysis, it may be best to investigate and clean the data.
+#' Due to improper writing, some words might not be recognized by sentiment analysis. As a result,
+#' in this function, once the data is loaded the function also pre-process the data before converting it to the dataframe.
+#' @export
 read_inbuilt_data <- function(data){
 
   data$review <- gsub("shouldn't","should not",data$review)
@@ -43,7 +52,14 @@ read_inbuilt_data <- function(data){
 
   return (data)
 }
-
+#' @title Read input csv data
+#' @name read_input_csv_data(data)
+#' @param data a csv file
+#' @return A data frame
+#' @examples read_input_csv_data("small.csv")
+#' @description The read_input_csv_data function allows the user to upload their csv file
+#' which is then loaded and once the data is loaded, the function also performs cleaning the data prior to converting it to the dataframe.
+#' @export
 read_input_csv_data <- function(csv_file){
 
   data = data.table::fread(csv_file)
@@ -64,7 +80,16 @@ read_input_csv_data <- function(csv_file){
 
 amazon_data <- read_input_csv_data('small.csv')
 
-
+#' @title get emotions
+#' @name get_emotion
+#' @param data a csv file
+#' @return A data frame
+#' @examples get_emotion("small.csv")
+#' @description This function works by dividing emotions in an column and they are giving us a total of 10
+#' different emotions, for example anger, eagerness, contempt, fear, joy, sadness, surprise, trust, negativity, and positivity,
+#' by using get nrc function the above 10 emotions will divide based on the positive and negative sentiments
+#' @references https://medium.com/swlh/exploring-sentiment-analysis-a6b53b026131
+#' @export
 get_emotion <- function(csv_file){
   library(syuzhet)
   csv_file$review <- tolower(csv_file$review)
@@ -74,6 +99,14 @@ get_emotion <- function(csv_file){
 
 emo_mat <- get_emotion(amazon_data)
 
+#' @title counting emotions
+#' @name count_emotions
+#' @param data a csv file
+#' @return A data frame
+#' @examples count_emotions("small.csv")
+#' @description This  function is used to count the total number of words are present
+#' in each emotion after the words have been divided by 10 emotions
+#' @export
 
 count_emotions <-function(emotion_file){
   #Getting the total frequency of the ten emotions
@@ -82,14 +115,29 @@ count_emotions <-function(emotion_file){
   return(emosum)
 }
 
-
+#' @title matrix conversion
+#' @name matrix_conversion
+#' @param data a csv file
+#' @return matrix
+#' @examples matrix_conversion("small.csv")
+#' @description Converting each of the 10 emotions data frames into a matrix data frame since
+#' dimension reduction will become easy to perform after the conversion of matrix data frame
+#' @references https://statisticsglobe.com/convert-data-frame-to-matrix-in-r
+#' @export
 matrix_conversion <- function(data_file){
   #building a matrix of emotion dataframe
   my_mat <- as.matrix(data_file)
   return(my_mat)
 }
 
-
+#' @title converting to sparse matrix
+#' @name convert_to_sparse_matrix
+#' @param data a csv file
+#' @return sparsematrix
+#' @examples convert_to_sparse_matrix("small.csv")
+#' @description It converts emotion matrix into sparse matrix, sparse matrices can be
+#' useful for computing large-scale applications that dense matrices cannot handle.
+#' @export
 convert_to_sparse_matrix <- function(){
   my_mat = matrix_conversion(data_file = emo_mat)
   #Building the Sparse matrix from the emotions matrix
@@ -97,6 +145,15 @@ convert_to_sparse_matrix <- function(){
   return(sparsematrix)
 }
 
+#' @title NMF dimension reduction
+#' @name nmf_func
+#' @param data a csv file
+#' @return nmf data
+#' @examples nmf_func("small.csv")
+#' @description Nonnegative matrix factorization (NMF) is an dimension reduction method.
+#' It has become a widely used tool for the analysis of high dimensional data as
+#' it automatically extracts sparse and meaningful features from a set of nonnegative data vectors.
+#' @export
 
 #NMF - Dimension Reduction
 nmf_func <- function(nmfdim){
@@ -108,21 +165,45 @@ nmf_func <- function(nmfdim){
   return(plot)
 }
 
-
+#' @title Normalizing the sparsematrix
+#' @name norm_sparse_matrix
+#' @param sparsematrix
+#' @return normalized data
+#' @examples norm_sparse_matrix("sparsematrix")
+#' @description normalization for sparse matrix which is needed for log convert the data to make it as "normal" as feasible,
+#' improving the validity of the statistical analysis results. In other words, the skewness of our
+#' initial data is reduced or eliminated via the log transformation.
+#' @references https://satijalab.org/seurat/articles/dim_reduction_vignette.html
+#' @export
 #Normalizing the data
 norm_sparse_matrix <- function(){
   norm_data <- convert_to_sparse_matrix()
   norm_data <- Seurat::LogNormalize(norm_data)
   return(norm_data)
 }
-
+#' @title modeling nmf
+#' @name modeling_nmf
+#' @param sparsematrix
+#' @return modeling data
+#' @examples modeling_nmf("normalized data")
+#' @description modeling nmf to discover hidden semantic patterns in unstructured collection of documents.
+#' Modeling by using Rank where the value or range of ranks for which NMF is performed.
+#' @export
 
 modeling_nmf <- function(rank){
   norm_data <- convert_to_sparse_matrix()
   nmf_model <- run_nmf(norm_data, rank=rank)
   return (nmf_model)
 }
-
+#' @title visualizing nmf
+#' @name heatmap_visualize
+#' @param nmf data
+#' @return graph
+#' @examples heatmap_visualize("normalized data")
+#' @description A heatmap uses a warm-to-cool color scheme to graphically represent visitor behavior data as hot and cold regions.
+#' Red is the location with the maximum visitor contact that’s means which emotion is strong (repeated more), and warm colors point to those areas,
+#' while cool colors denote those areas with the least visitor interaction which means which emotion weak (repeated less)
+#' @export
 
 #create a hteamap for the nmf model
 heatmap_visualize <- function(){
@@ -132,7 +213,15 @@ heatmap_visualize <- function(){
   colnames(nmf_model$h) <- colnames(sparsematrix)
   return(heatmap(h))
 }
-
+#' @title PCA dimension reduction
+#' @name pca_func
+#' @param emotions data
+#' @return pca data
+#' @examples pca_func("emotions data")
+#' @description PCA dimension reduction method which is used to reduce the number of variables in your data by extracting important ones from a large pool.
+#' It reduces the dimension of the data with the aim of retaining as much information as possible.
+#' @references https://rpubs.com/JanpuHou/278584
+#' @export
 
 #PCA - Dimension Reduction
 pca_func <- function (){
@@ -140,7 +229,14 @@ pca_func <- function (){
   pca_out <- prcomp (emo_mat, scale = T)
   return (pca_out)
 }
-
+#' @title visualizing pca
+#' @name visualizing_pca
+#' @param pca data
+#' @return graph
+#' @examples visualizing_pca("pca output")
+#' @description biplot visualizes the data into two-dimensional chart that represents the relationship between the rows and columns of a table.
+#' optimally represent any two of the following characteristics: distances between observations. relationships between variables.
+#' @export
 
 
 #Biplotting to see how the features are related
@@ -153,6 +249,16 @@ visualizing_pca <- function (){
 
 
 set.seed(1234) # Setting seed
+#' @title Clustering by using Kmeans
+#' @name cluster_kmeans
+#' @param matrix data
+#' @return graph
+#' @examples cluster_kmeans("data_matrix")
+#' @description K-means clustering is an Unsupervised Non-linear algorithm that cluster data based on similarity or similar groups. It chooses the number K clusters
+#' It Select at random K points, and forms centroids and it will Assign each data point to closest centroid that forms K clusters.
+#' from the 10 emotions the k means clustering performs cluster based on positive and negative emotions.
+#' @references https://www.geeksforgeeks.org/k-means-clustering-in-r-programming/
+#' @export
 
 cluster_kmeans <- function(data_matrix){
 
@@ -199,7 +305,17 @@ cluster_kmeans <- function(data_matrix){
 }
 
 
-
+#' @title Hirarchial clustering
+#' @name h_cluster
+#' @param matrix data
+#' @return graph
+#' @examples h_cluster("emo_data")
+#' @description Hierarchical clustering is mostly used for combining nearest clusters into one large cluster here in our package we are combing nearest emotions into one
+#' large cluster to find the nearest clusters h cluster firstly calculate the distance between every pair of observation points and store it in a distance matrix. By plotting our data,
+#' we can see that two emotions like “anger” and “negative” are the nearest emotions they were combined and form a large cluster, after that, it updates its distance calculation
+#' and stores the results in a fresh distance matrix. The process then repeats stages 2 and 3 until all clusters have been combined into a single cluster.
+#' @references https://www.datacamp.com/tutorial/hierarchical-clustering-R
+#' @export
 # Hierarchical Clustering
 # https://www.datacamp.com/tutorial/hierarchical-clustering-R
 h_cluster<- function(emo){
@@ -225,7 +341,6 @@ h_cluster<- function(emo){
 
 
 }
-
 
 
 
