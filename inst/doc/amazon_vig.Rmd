@@ -1,0 +1,289 @@
+---
+title: "Amazon Customer Review"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Amazon Customer Review}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Overview
+
+1.  The code dplyr verbs input and output data frames. This contrasts with base 
+    R functions which more frequently work with individual vectors.
+
+1.  dplyr relies heavily on "non-standard evaluation" so that you don't need to 
+    use `$` to refer to columns in the "current" data frame. This behaviour 
+    is inspired by the base functions `subset()` and `transform()`.
+    
+1.  dplyr solutions tend to use a variety of single purpose verbs, while base 
+    R solutions typically tend to use `[` in a variety of ways, depending on the 
+    task at hand. 
+    
+1.  Multiple dplyr verbs are often strung together into a pipeline by `%>%`.
+    In base R, you'll typically save intermediate results to a variable that
+    you either discard, or repeatedly overwrite.
+
+1.  All dplyr verbs handle "grouped" data frames so that the code to perform a
+    computation per-group looks very similar to code that works on a whole 
+    data frame. In base R, per-group operations tend to have varied forms.
+    
+    
+    
+  # One table verbs
+
+The following table shows a condensed translation between dplyr verbs and their base R equivalents. The following sections describe each operation in more detail. You learn more about the dplyr verbs in their documentation and in For more `vignette("one-table")`.
+
+| dplyr                          | base                                             |
+|------------------------------- |--------------------------------------------------|
+| `arrange(df, x)`               | `df[order(x), , drop = FALSE]`                   | 
+| `distinct(df, x)`              | `df[!duplicated(x), , drop = FALSE]`, `unique()` | 
+| `filter(df, x)`                | `df[which(x), , drop = FALSE]`, `subset()`       | 
+| `mutate(df, z = x + y)`        | `df$z <- df$x + df$y`, `transform()`             | 
+| `pull(df, 1)`                  | `df[[1]]`                                        | 
+| `pull(df, x)`                  | `df$x`                                           | 
+| `rename(df, y = x)`            | `names(df)[names(df) == "x"] <- "y"`             | 
+| `relocate(df, y)`              | `df[union("y", names(df))]`                      | 
+| `select(df, x, y)`             | `df[c("x", "y")]`, `subset()`                    | 
+| `select(df, starts_with("x"))` | `df[grepl("^x", names(df))]`                     | 
+| `summarise(df, mean(x))`       | `mean(df$x)`, `tapply()`, `aggregate()`, `by()`  | 
+| `slice(df, c(1, 2, 5))`        | `df[c(1, 2, 5), , drop = FALSE]`                 | 
+
+
+
+
+
+
+```{r setup}
+library(EmoReader)
+```
+
+
+Loading the data
+```{r}
+str(amazon_data)
+
+```
+
+```{r}
+head(amazon_data)
+```
+
+### loading the data
+
+This function load and clean the data by separating the I'm to I am 
+
+it requires para as dataframe or list typenot csv file type 
+```{r}
+df <- read_inbuilt_data(amazon_data)
+str(df)
+```
+
+`
+
+Get Emotion is the function to convert list into emotion value table. we need to pass list or dataframe as parameter.
+```{r}
+emo_mat <- get_emotion(df)
+head(emo_mat)
+```
+
+
+count_emotions function provides the count table with their frequency.we need to pass list or dataframe as parameter.
+```{r}
+count_emotions(emo_mat)
+```
+
+Matrix conversion function helps to convert the emotion table values into matrix
+```{r}
+my_mat <-matrix_conversion(emo_mat)
+head(my_mat)
+```
+
+
+converting into sparse matrix
+```{r}
+library(Matrix)
+sparse_mat <- convert_to_sparse_matrix()
+head(sparse_mat)
+```
+
+
+we need to pass number of dimension in parameter
+```{r}
+library(singlet)
+nmf_func(3)
+```
+
+to normalize the data.
+```{r}
+norm <- norm_sparse_matrix()
+
+head(norm)
+```
+
+we need to pass rank as parameter
+```{r}
+emo_nmf <- modeling_nmf(3)
+
+```
+
+```{r}
+head(emo_nmf$w)
+```
+
+
+```{r}
+head(emo_nmf$d)
+```
+
+
+```{r}
+head(emo_nmf$h)
+```
+
+
+
+```{r}
+heatmap_visualize()
+```
+
+
+
+```{r}
+pca_func()
+```
+
+
+
+```{r}
+visualizing_pca()
+```
+
+
+```{r}
+library(cluster)
+set.seed(1234) # Setting seed
+
+cluster_kmeans(emo_mat)
+```
+
+
+```{r}
+h_cluster(emo_mat)
+```
+
+
+```{r}
+library(readr)
+data <- read.csv('Flipkart_Customer_Review.csv')
+data <- data.frame(star_rating = data$rating, review = data$review)
+```
+
+
+
+
+
+```{r}
+df_flip <- read_inbuilt_data(data)
+str(df_flip)
+```
+
+
+
+Get Emotion is the function to convert list into emotion value table. we need to pass list or dataframe as parameter.
+```{r}
+emo_mat <- get_emotion(df_flip)
+head(emo_mat)
+```
+
+
+count_emotions function provides the count table with their frequency.we need to pass list or dataframe as parameter.
+```{r}
+count_emotions(emo_mat)
+```
+
+Matrix conversion function helps to convert the emotion table values into matrix
+```{r}
+my_mat <-matrix_conversion(emo_mat)
+head(my_mat)
+```
+
+
+converting into sparse matrix
+```{r}
+library(Matrix)
+sparse_mat <- convert_to_sparse_matrix()
+head(sparse_mat)
+```
+
+
+we need to pass number of dimension in parameter
+```{r}
+library(singlet)
+nmf_func(3)
+```
+
+to normalize the data.
+```{r}
+norm <- norm_sparse_matrix()
+
+head(norm)
+```
+
+we need to pass rank as parameter
+```{r}
+emo_nmf <- modeling_nmf(3)
+
+```
+
+```{r}
+head(emo_nmf$w)
+```
+
+
+```{r}
+head(emo_nmf$d)
+```
+
+
+```{r}
+head(emo_nmf$h)
+```
+
+
+
+```{r}
+heatmap_visualize()
+```
+
+
+
+```{r}
+pca_func()
+```
+
+
+
+```{r}
+visualizing_pca()
+```
+
+
+```{r}
+library(cluster)
+set.seed(1234) # Setting seed
+
+cluster_kmeans(emo_mat)
+```
+
+
+```{r}
+h_cluster(emo_mat)
+```

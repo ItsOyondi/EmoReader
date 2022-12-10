@@ -7,7 +7,7 @@
 cluster_kmeans(data_matrix)
 }
 \arguments{
-\item{data_matrix}{data}
+\item{data_matrix}{emo_mat file as a parameter}
 }
 \value{
 graph

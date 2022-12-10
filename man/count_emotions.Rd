@@ -7,10 +7,10 @@
 count_emotions(emotion_file)
 }
 \arguments{
-\item{emotion_file}{a csv file}
+\item{emotion_file}{emo_mat file as a parameter to count how many words will fall under each emotion}
 }
 \value{
-A data fram
+A data frame
 }
 \description{
 This  function is used to count the total number of words are present

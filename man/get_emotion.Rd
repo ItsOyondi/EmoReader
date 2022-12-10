@@ -7,7 +7,7 @@
 get_emotion(csv_file)
 }
 \arguments{
-\item{csv_file}{a csv file}
+\item{csv_file}{csv file as a parameter}
 }
 \value{
 A data frame

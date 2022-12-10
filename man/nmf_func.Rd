@@ -7,7 +7,7 @@
 nmf_func(nmfdim)
 }
 \arguments{
-\item{nmfdim}{equal to rank for NMF}
+\item{nmfdim}{sparsematrix as a parameter}
 }
 \value{
 nmf data

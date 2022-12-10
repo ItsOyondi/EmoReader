@@ -7,7 +7,7 @@
 matrix_conversion(data_file)
 }
 \arguments{
-\item{data_file}{a csv file}
+\item{data_file}{csv file as a parameter}
 }
 \value{
 matrix
