@@ -76,3 +76,214 @@ str(amazon_data)
 head(amazon_data)
 ```
 
+### loading the data
+
+This function load and clean the data by separating the I'm to I am 
+
+it requires para as dataframe or list typenot csv file type 
+```{r}
+df <- read_inbuilt_data(amazon_data)
+str(df)
+```
+
+`
+
+Get Emotion is the function to convert list into emotion value table. we need to pass list or dataframe as parameter.
+```{r}
+emo_mat <- get_emotion(df)
+head(emo_mat)
+```
+
+
+count_emotions function provides the count table with their frequency.we need to pass list or dataframe as parameter.
+```{r}
+count_emotions(emo_mat)
+```
+
+Matrix conversion function helps to convert the emotion table values into matrix
+```{r}
+my_mat <-matrix_conversion(emo_mat)
+head(my_mat)
+```
+
+
+converting into sparse matrix
+```{r}
+library(Matrix)
+sparse_mat <- convert_to_sparse_matrix()
+head(sparse_mat)
+```
+
+
+we need to pass number of dimension in parameter
+```{r}
+library(singlet)
+nmf_func(3)
+```
+
+to normalize the data.
+```{r}
+norm <- norm_sparse_matrix()
+
+head(norm)
+```
+
+we need to pass rank as parameter
+```{r}
+emo_nmf <- modeling_nmf(3)
+
+```
+
+```{r}
+head(emo_nmf$w)
+```
+
+
+```{r}
+head(emo_nmf$d)
+```
+
+
+```{r}
+head(emo_nmf$h)
+```
+
+
+
+```{r}
+heatmap_visualize()
+```
+
+
+
+```{r}
+pca_func()
+```
+
+
+
+```{r}
+visualizing_pca()
+```
+
+
+```{r}
+library(cluster)
+set.seed(1234) # Setting seed
+
+cluster_kmeans(emo_mat)
+```
+
+
+```{r}
+h_cluster(emo_mat)
+```
+
+
+```{r}
+library(readr)
+data <- read.csv('Flipkart_Customer_Review.csv')
+data <- data.frame(star_rating = data$rating, review = data$review)
+```
+
+
+
+
+
+```{r}
+df_flip <- read_inbuilt_data(data)
+str(df_flip)
+```
+
+
+
+Get Emotion is the function to convert list into emotion value table. we need to pass list or dataframe as parameter.
+```{r}
+emo_mat <- get_emotion(df_flip)
+head(emo_mat)
+```
+
+
+count_emotions function provides the count table with their frequency.we need to pass list or dataframe as parameter.
+```{r}
+count_emotions(emo_mat)
+```
+
+Matrix conversion function helps to convert the emotion table values into matrix
+```{r}
+my_mat <-matrix_conversion(emo_mat)
+head(my_mat)
+```
+
+
+converting into sparse matrix
+```{r}
+library(Matrix)
+sparse_mat <- convert_to_sparse_matrix()
+head(sparse_mat)
+```
+
+
+we need to pass number of dimension in parameter
+```{r}
+library(singlet)
+nmf_func(3)
+```
+
+to normalize the data.
+```{r}
+norm <- norm_sparse_matrix()
+
+head(norm)
+```
+
+we need to pass rank as parameter
+```{r}
+emo_nmf <- modeling_nmf(3)
+
+```
+
+```{r}
+head(emo_nmf$w)
+```
+
+
+```{r}
+head(emo_nmf$d)
+```
+
+
+```{r}
+head(emo_nmf$h)
+```
+
+
+
+```{r}
+heatmap_visualize()
+```
+
+
+
+```{r}
+pca_func()
+```
+
+
+
+```{r}
+visualizing_pca()
+```
+
+
+```{r}
+library(cluster)
+set.seed(1234) # Setting seed
+
+cluster_kmeans(emo_mat)
+```
+
+
+```{r}
+h_cluster(emo_mat)
+```
