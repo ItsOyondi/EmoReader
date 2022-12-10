@@ -7,7 +7,7 @@
 modeling_nmf(rank)
 }
 \arguments{
-\item{rank}{for NMF dimension reduction}
+\item{rank}{sparsematrix as a parameter}
 }
 \value{
 modeling data

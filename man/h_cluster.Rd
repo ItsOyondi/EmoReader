@@ -7,7 +7,7 @@
 h_cluster(emo)
 }
 \arguments{
-\item{emo}{data}
+\item{emo}{emo_mat file as a parameter}
 }
 \value{
 graph
