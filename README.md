@@ -9,10 +9,12 @@ EmoReader is a R package that generates the sentiments from the text document. I
 
 Install the package from the GitHub:
 
-library(devtools)
-devtools::install_github("https://github.com/dikshashrestha/EmoReader")
-library (EmoReader)
 
+```
+library(devtools)
+devtools::install_github("dikshashrestha/EmoReader")
+library (EmoReader)
+```
 ## Link to the pkgdown site
 
 The link to the pkgdown site:
