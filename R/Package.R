@@ -1,10 +1,3 @@
-#import libraries
-#' @import syuzhet
-#' @import cluster
-#' @import singlet
-#' @import Matrix
-#' @import dplyr
-
 
 
 
@@ -44,8 +37,8 @@ read_inbuilt_data <- function(data){
 #' @references https://medium.com/swlh/exploring-sentiment-analysis-a6b53b026131
 #' @export
 get_emotion <- function(csv_file){
-  csv_file$review <- tolower(csv_file$review)
-  emotions <- get_nrc_sentiment(csv_file$review)
+  csv_file$review <- base::tolower(csv_file$review)
+  emotions <- syuzhet::get_nrc_sentiment(csv_file$review)
   return (emotions)
 }
 
@@ -60,7 +53,7 @@ get_emotion <- function(csv_file){
 
 count_emotions <-function(emotion_file){
   #Getting the total frequency of the ten emotions
-  emosbar <- colSums(emotion_file)
+  emosbar <- Matrix::colSums(emotion_file)
   emosum <- data.frame(count = emosbar, emotion = names(emosbar))
   return(emosum)
 }
@@ -88,7 +81,7 @@ matrix_conversion <- function(data_file){
 convert_to_sparse_matrix <- function(){
   my_mat = matrix_conversion(data_file = emo_mat)
   #Building the Sparse matrix from the emotions matrix
-  sparsematrix <- as(my_mat, "sparseMatrix")
+  sparsematrix <- methods::as(my_mat, "sparseMatrix")
   return(sparsematrix)
 }
 
@@ -104,9 +97,9 @@ convert_to_sparse_matrix <- function(){
 #NMF - Dimension Reduction
 nmf_func <- function(nmfdim){
   sparsematrix = convert_to_sparse_matrix()
-  data_nmf <- run_nmf(sparsematrix, nmfdim) #nmfdim = rank
-  hist(sparsematrix@x)
-  plot(density(sparsematrix@x))
+  data_nmf <- singlet::run_nmf(sparsematrix, nmfdim) #nmfdim = rank
+  graphics::hist(sparsematrix@x)
+  plot(stats::density(sparsematrix@x))
   return(plot)
 }
 
@@ -136,7 +129,7 @@ norm_sparse_matrix <- function(){
 
 modeling_nmf <- function(rank){
   norm_data <- convert_to_sparse_matrix()
-  nmf_model <- run_nmf(norm_data, rank=rank)
+  nmf_model <- singlet::run_nmf(norm_data, rank=rank)
   return (nmf_model)
 }
 #' @title visualizing nmf
@@ -152,7 +145,7 @@ heatmap_visualize <- function(){
   nmf_model = modeling_nmf(3)
   sparsematrix = convert_to_sparse_matrix()
   h <- nmf_model$h
-  colnames(nmf_model$h) <- colnames(sparsematrix)
+  base::colnames(nmf_model$h) <- base::colnames(sparsematrix)
   return(heatmap(h))
 }
 #' @title PCA dimension reduction
@@ -166,7 +159,7 @@ heatmap_visualize <- function(){
 #PCA - Dimension Reduction
 pca_func <- function (){
   #data(emotions, package = "MASS")
-  pca_out <- prcomp (emo_mat, scale = T)
+  pca_out <- stats::prcomp (emo_mat, scale = T)
   return (pca_out)
 }
 
@@ -181,8 +174,8 @@ pca_func <- function (){
 #Biplotting to see how the features are related
 visualizing_pca <- function (){
   pca_out = pca_func()
-  par(mar=c(4,4,2,2))
-  biplot(pca_out, cex = 0.5, cex.axis = 0.5) #each number is the row in the dataset and the points in the red are the columns
+  graphics::par(mar=c(4,4,2,2))
+  stats::biplot(pca_out, cex = 0.5, cex.axis = 0.5) #each number is the row in the dataset and the points in the red are the columns
   return(biplot)
 }
 
@@ -237,7 +230,7 @@ cluster_kmeans <- function(data_matrix){
            labels = 4,
            plotchar = FALSE,
            span = TRUE,
-           main = paste("Cluster Amazon reviews"),
+           main = paste("Kmeans Cluster on Sentiment"),
            xlab = 'positive',
            ylab = 'negative')
 }
@@ -274,7 +267,7 @@ h_cluster<- function(emo){
   plot(hclust_avg_emo)
   #seperating the cluster by color
   rect.hclust(hclust_avg_emo , k = 3, border = 2:6)
-  abline(h = 280, col = 'red')# cutting line for the cluster.
+  graphics::abline(h = 280, col = 'red')# cutting line for the cluster.
 
 
 }
