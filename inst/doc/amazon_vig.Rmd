@@ -1,5 +1,5 @@
 ---
-title: "Amazon Customer Review"
+title: "Sentimental Analysis of Customer Review"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Amazon Customer Review}
@@ -14,71 +14,32 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Overview
 
-1.  The code dplyr verbs input and output data frames. This contrasts with base 
-    R functions which more frequently work with individual vectors.
+# Package Vignette - Rationale
 
-1.  dplyr relies heavily on "non-standard evaluation" so that you don't need to 
-    use `$` to refer to columns in the "current" data frame. This behaviour 
-    is inspired by the base functions `subset()` and `transform()`.
-    
-1.  dplyr solutions tend to use a variety of single purpose verbs, while base 
-    R solutions typically tend to use `[` in a variety of ways, depending on the 
-    task at hand. 
-    
-1.  Multiple dplyr verbs are often strung together into a pipeline by `%>%`.
-    In base R, you'll typically save intermediate results to a variable that
-    you either discard, or repeatedly overwrite.
+Text clustering is one of the most used tool to organize the documents to a well structured format or to find out a meaningful information from the text document. However, the text documents would consume irrelevant, redundant and noisy data which creates barrier in providing an insight from the data. Similarly, many customer provides review on different products in the company's website, however, the company may not be able to recognize the sentiment behind the review. To mitigate and address the problem, we created a EmoReader package which contains the get_emotion function that provides 10 different sentiments from the document and scores them accordingly. Furthermore, we perform nmf_func and pca_func to find out which word tends to co-occur. The package would also include the cluster_kmeans and h_cluster to cluster different emotions and to find out which clustering provides accurate information.
 
-1.  All dplyr verbs handle "grouped" data frames so that the code to perform a
-    computation per-group looks very similar to code that works on a whole 
-    data frame. In base R, per-group operations tend to have varied forms.
-    
-    
-    
-  # One table verbs
+# Package Vignette - Significance/Innovation
 
-The following table shows a condensed translation between dplyr verbs and their base R equivalents. The following sections describe each operation in more detail. You learn more about the dplyr verbs in their documentation and in For more `vignette("one-table")`.
-
-| dplyr                          | base                                             |
-|------------------------------- |--------------------------------------------------|
-| `arrange(df, x)`               | `df[order(x), , drop = FALSE]`                   | 
-| `distinct(df, x)`              | `df[!duplicated(x), , drop = FALSE]`, `unique()` | 
-| `filter(df, x)`                | `df[which(x), , drop = FALSE]`, `subset()`       | 
-| `mutate(df, z = x + y)`        | `df$z <- df$x + df$y`, `transform()`             | 
-| `pull(df, 1)`                  | `df[[1]]`                                        | 
-| `pull(df, x)`                  | `df$x`                                           | 
-| `rename(df, y = x)`            | `names(df)[names(df) == "x"] <- "y"`             | 
-| `relocate(df, y)`              | `df[union("y", names(df))]`                      | 
-| `select(df, x, y)`             | `df[c("x", "y")]`, `subset()`                    | 
-| `select(df, starts_with("x"))` | `df[grepl("^x", names(df))]`                     | 
-| `summarise(df, mean(x))`       | `mean(df$x)`, `tapply()`, `aggregate()`, `by()`  | 
-| `slice(df, c(1, 2, 5))`        | `df[c(1, 2, 5), , drop = FALSE]`                 | 
+The EmoReader package will help in the efficiency of the data synthesis to generate the emotions from the text and will help in discovering the pattern of how the sentiments are clustered together.
 
 
+## Aim 1 and Aim 2
 
+The package addresses on generating the 10 different emotions which are then followed by performing two different dimension reduction function which is nmf_func and pca_func that helps to remove the redundant and noisy data. The sentiments that are generated from the get_emotion are then clustered using the cluster_kmeans and h_cluster. The aim of the package is to be able to get the emotions from the text and to be able to compare between two different clusters to find out which clustering method provides accurate information on the sentiments are clustered together.
 
-
+## Loading the EmoReader package
 
 ```{r setup}
 library(EmoReader)
 ```
 
 
-Loading the data
-```{r}
-str(amazon_data)
+# Demo of how to use the functions
 
-```
+## Loading the dataset
 
-```{r}
-head(amazon_data)
-```
-
-### loading the data
-
-This function load and clean the data by separating the I'm to I am 
+We will be analyzing the dataset of an Amazon's customer review made on Electronic Products and the function below loads and pre-process the data. The function separates and breaks the word such as I'm to I am making it a different words.
 
 it requires para as dataframe or list typenot csv file type 
 ```{r}
@@ -86,49 +47,57 @@ df <- read_inbuilt_data(amazon_data)
 str(df)
 ```
 
-`
 
-Get Emotion is the function to convert list into emotion value table. we need to pass list or dataframe as parameter.
+The get_emotion function converts the review which are in the string format to 10 different emotions. Firstly, the function changes the capitalized words to a lower case and then the 10 different emotions are created and it scores each review to different emotions accordingly.The user need to pass a dataframe in the parameter. Here, we created a data frame named df of the data.  
+
 ```{r}
 emo_mat <- get_emotion(df)
 head(emo_mat)
 ```
 
 
-count_emotions function provides the count table with their frequency.we need to pass list or dataframe as parameter.
+The count_emotions function provides the frequency of each of the emotions with the frequency table. The function as for the parameter to be passed and we have passed our emo_mat parameter which consists of the 10 different emotion that has been generated from each reviews. 
+we need to pass list or dataframe as parameter.
+
 ```{r}
 count_emotions(emo_mat)
 ```
 
-Matrix conversion function helps to convert the emotion table values into matrix
+The matrix_conversion function helps to convert the emotion table values into a matrix table which are required for performing dimension reduction and clustering of the generated emotions.
+
 ```{r}
 my_mat <-matrix_conversion(emo_mat)
 head(my_mat)
 ```
 
 
-converting into sparse matrix
+After converting to a matrix_conversion, the convert_to_sparse_matrix functions converts the basic matrix table into the sparsematrix format which consumes less memory than the dense basic matrix. This function would generate the dgc matrix which is the class of sparse matrix.
+
 ```{r}
 library(Matrix)
 sparse_mat <- convert_to_sparse_matrix()
 head(sparse_mat)
 ```
 
+## Aim 1: Classifying the emotions from the review performing NMF dimension reduction and then clustering the emotion using K-mean clustering.
 
-we need to pass number of dimension in parameter
+The nmf_func takes the sparse matrix data which was converted from a basic matrix of the emotion. The nmf_func minimizes the dimension of the data using the Euclidean distance. Running the nmf_func provides the rank and need to pass the number of rank in the parameter.
+
 ```{r}
 library(singlet)
 nmf_func(3)
 ```
 
-to normalize the data.
+The norm_sparse_matrix function normalizes the data. For this function, the Seurat package has been used and by default the LogNormalize function is used from the Seurat to normalize the feature expressions.
+
 ```{r}
 norm <- norm_sparse_matrix()
 
 head(norm)
 ```
 
-we need to pass rank as parameter
+The modeling_nmf function takes the parameter from the user on the rank that has been generated after running the nmf_func. The nmf rank for our dataset is 3, so rank = 3 has been passed in the function.
+
 ```{r}
 emo_nmf <- modeling_nmf(3)
 
@@ -148,24 +117,15 @@ head(emo_nmf$d)
 head(emo_nmf$h)
 ```
 
-
+The heatmap_visualize function plots the heatmap which are colored differently according to their type. The grid type visualization is generated from the heatmap_visualize function which
+takes into the rank of 3 and cluster it as per hierarchical clustering showing the dendogram.
 
 ```{r}
 heatmap_visualize()
 ```
 
 
-
-```{r}
-pca_func()
-```
-
-
-
-```{r}
-visualizing_pca()
-```
-
+The cluster_kmeans function is used to cluster the group that have as per their similarity. Here, the cluster_kmeans clusters the emotion as per the similarity. Also, this function further cluster the emotion as per the negative and positive words.
 
 ```{r}
 library(cluster)
@@ -174,20 +134,35 @@ set.seed(1234) # Setting seed
 cluster_kmeans(emo_mat)
 ```
 
+## Aim 2: Classifying the emotion from the review of the customers performing PCA dimension reduction and h-clustering.
 
+The pca_func is used to find the patterns in the high dimensional data while retaining the trends of the data. This function takes the data as input from the emotions and standardizes the input data so that it has zero mean and variance and the pca dimension reduction can be performed in the data.
+
+```{r}
+pca_func()
+```
+
+The visualizing_pca function provides a visualization of any pattern or trends that can be shown from the dataset. 
+
+```{r}
+visualizing_pca()
+```
+
+
+The h_cluster function is used to perform clustering by grouping the data into a tree of clusters. First, through this function each cluster are generated and then it identifies the clusters that are closed together and is further showed in the tree as per the cluster. Here, the emotion are clustered in the dendrogram showing the cluster of emotions that shows similarity. 
 ```{r}
 h_cluster(emo_mat)
 ```
 
+# Package Vignette: Real-life Examples
+
+We also tried running using our package in the Flipkart's Customer Review dataset. The below function loads the data.
 
 ```{r}
 library(readr)
 data <- read.csv('Flipkart_Customer_Review.csv')
 data <- data.frame(star_rating = data$rating, review = data$review)
 ```
-
-
-
 
 
 ```{r}
@@ -197,26 +172,27 @@ str(df_flip)
 
 
 
-Get Emotion is the function to convert list into emotion value table. we need to pass list or dataframe as parameter.
+The get_emotion is the function to convert the review into emotion value of table. We need to pass list or dataframe as parameter in the get_emotion function.
+
 ```{r}
 emo_mat <- get_emotion(df_flip)
 head(emo_mat)
 ```
 
 
-count_emotions function provides the count table with their frequency.we need to pass list or dataframe as parameter.
+The count_emotions function provides the count table with their frequency for the emotions. We need to pass list or dataframe as a parameter in the count_emotion function.
+
 ```{r}
 count_emotions(emo_mat)
 ```
 
-Matrix conversion function helps to convert the emotion table values into matrix
+Matrix conversion function helps to convert the emotion table values into matrix which is then converted to sparse matrix.
 ```{r}
 my_mat <-matrix_conversion(emo_mat)
 head(my_mat)
 ```
 
 
-converting into sparse matrix
 ```{r}
 library(Matrix)
 sparse_mat <- convert_to_sparse_matrix()
@@ -224,20 +200,21 @@ head(sparse_mat)
 ```
 
 
-we need to pass number of dimension in parameter
+## Aim 1: Classifying the emotions from the review performing NMF dimension reduction and then clustering the emotion using K-mean clustering.
+
+The nmf_function provides the rank and the user needs to the rank to the parameter.
 ```{r}
 library(singlet)
 nmf_func(3)
 ```
 
-to normalize the data.
+
 ```{r}
 norm <- norm_sparse_matrix()
 
 head(norm)
 ```
 
-we need to pass rank as parameter
 ```{r}
 emo_nmf <- modeling_nmf(3)
 
@@ -258,23 +235,11 @@ head(emo_nmf$h)
 ```
 
 
-
 ```{r}
 heatmap_visualize()
 ```
 
-
-
-```{r}
-pca_func()
-```
-
-
-
-```{r}
-visualizing_pca()
-```
-
+After running the NMF, the clustering is done for the emotions using cluster_kmeans function which clusters the emotion in comparison with positive and negative words too.
 
 ```{r}
 library(cluster)
@@ -284,6 +249,37 @@ cluster_kmeans(emo_mat)
 ```
 
 
+## Aim 2: Classifying the emotion from the review of the customers performing PCA dimension reduction and h-clustering.
+
+The pca_func is used to remove the redundant and noisy data from the dataset. The dimensions of the emotions is reduced.
+
+```{r}
+pca_func()
+```
+
+
+```{r}
+visualizing_pca()
+```
+
+After running the pca_func and reducing the dimension, the h_cluster function is performed to classify the emotions.
+
 ```{r}
 h_cluster(emo_mat)
 ```
+## Conclusion
+
+From running the package, we came to find out that both the clustering method was good at classifying the emotions, however, for the dimension reduction NMF provided a meaningful information whereas the PCA didn't provided information as expected.
+
+## References
+
+1. https://medium.com/swlh/exploring-sentiment-analysis-a6b53b026131
+2. https://statisticsglobe.com/convert-data-frame-to-matrix-in-r
+3. https://satijalab.org/seurat/articles/dim_reduction_vignette.html
+4. https://rpubs.com/JanpuHou/278584
+5. https://www.geeksforgeeks.org/k-means-clustering-in-r-programming/
+6. https://www.datacamp.com/tutorial/hierarchical-clustering-R
+7. https://r-pkgs.org/man.html
+
+
+
