@@ -18,7 +18,7 @@ library (EmoReader)
 ## Link to the pkgdown site
 
 The link to the pkgdown site:
-
+https://itsoyondi.github.io/EmoReader/index.html
 
 ## Link to the package vignette
 
