@@ -36,7 +36,7 @@ https://dikshashrestha.github.io/EmoReader/
 ## Link to the package vignette
 
 The link to the package vignette is below:
-https://github.com/dikshashrestha/EmoReader/blob/main/vignettes/package_vignette.pdf
+https://dikshashrestha.github.io/EmoReader/articles/amazon_vig.html
 
 
 ## Example Code Block
