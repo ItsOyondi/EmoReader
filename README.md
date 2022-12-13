@@ -7,9 +7,14 @@ EmoReader is a R package that generates the sentiments from the text document. I
 
 ## Installation of the package
 
-Install the package from the GitHub:
+You can install the ```EmoReader``` package from the GitHub:
 
+We need to first install the devtools package
 
+```
+install.packages("devtools")
+```
+ 
 ```
 library(devtools)
 devtools::install_github("dikshashrestha/EmoReader")
@@ -23,11 +28,12 @@ https://itsoyondi.github.io/EmoReader/index.html
 ## Link to the package vignette
 
 The link to the package vignette is below:
+https://github.com/dikshashrestha/EmoReader/blob/main/vignettes/package_vignette.pdf
 
 
 ## Example Code Block
 
-# loading the in built dataset 
+### Loading the in-built dataset 
 ```
 df <- read_inbuilt_data(amazon_data)
 str(df)
@@ -35,8 +41,6 @@ str(df)
 #  $ star_rating: int  5 5 5 4 2 3 3 5 4 5 ...
 #  $ review     : chr  "As advertised. Everything works perfectly, I'm very happy with the camera. As a matter of fact I'm going to buy"| __truncated__ # #  "it's great" "These work great and fit my life proof case for the iPhone 6" "Work very well but could not get used to not hearing anything out of the #  ear they v were plugged into." ...
 ```
-
-
 
 
 ```
@@ -67,12 +71,16 @@ head(sparse_mat)
 # [6,] . 1 . . 1 . 1 1 . 3
 ```
 
-#loading the csv file and passing to dataframe 
+### Loading the csv file and passing it to a dataframe 
+
+The below function reads the csv file and it is then passed to a dataframe afte renaming the columns. 
 ```
 library(readr)
 data <- read.csv('Flipkart_Customer_Review.csv')
 data <- data.frame(star_rating = data$rating, review = data$review)
 ```
+
+Our read_inbuilt_Data function then pre-process the dataframe which is passed to the data.
 
 ```
 df_flip <- read_inbuilt_data(data)
