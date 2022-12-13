@@ -17,7 +17,7 @@ You would need to install the singlet package that will be used to run the nmf_f
 
 ```
 library(devtools)
-devtools:install_github("zdebruine/singlet")
+devtools::install_github("zdebruine/singlet")
 library(singlet)
 ```
 
