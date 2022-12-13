@@ -7,14 +7,14 @@
 
 ## Installation of the package
 
-You can install the ```EmoReader``` package from the GitHub:
-
-We need to first install the devtools package
+We need to first install the devtools package. You can install the ```devtools ``` using the below code:
 
 ```
 install.packages("devtools")
 ```
- 
+
+You can install the ```EmoReader``` package from the GitHub: 
+
 ```
 library(devtools)
 devtools::install_github("dikshashrestha/EmoReader")
