@@ -13,6 +13,14 @@ We need to first install the devtools package. You can install the ```devtools `
 install.packages("devtools")
 ```
 
+You would need to install the singlet package that will be used to run the nmf_func in the EmoReader package. You can install the  ```singlet``` using the below code:
+
+```
+library(devtools)
+devtools:install_github("zdebruine/singlet")
+library(singlet)
+```
+
 You can install the ```EmoReader``` package from the GitHub: 
 
 ```
