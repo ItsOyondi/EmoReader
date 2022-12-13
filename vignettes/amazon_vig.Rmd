@@ -41,7 +41,7 @@ library(EmoReader)
 
 We will be analyzing the dataset of an Amazon's customer review made on Electronic Products and the function below loads and pre-process the data. The function separates and breaks the word such as I'm to I am making it a different words.
 
-it requires para as dataframe or list typenot csv file type 
+
 ```{r}
 df <- read_inbuilt_data(amazon_data)
 str(df)
@@ -56,8 +56,8 @@ head(emo_mat)
 ```
 
 
-The count_emotions function provides the frequency of each of the emotions with the frequency table. The function as for the parameter to be passed and we have passed our emo_mat parameter which consists of the 10 different emotion that has been generated from each reviews. 
-we need to pass list or dataframe as parameter.
+The count_emotions function provides the frequency of each of the emotions with the frequency table. The function ask for the parameter to be passed and we have passed our emo_mat parameter which consists of the 10 different emotion that has been generated from each reviews. 
+
 
 ```{r}
 count_emotions(emo_mat)
@@ -117,8 +117,7 @@ head(emo_nmf$d)
 head(emo_nmf$h)
 ```
 
-The heatmap_visualize function plots the heatmap which are colored differently according to their type. The grid type visualization is generated from the heatmap_visualize function which
-takes into the rank of 3 and cluster it as per hierarchical clustering showing the dendogram.
+The heatmap_visualize function plots the heatmap which are colored differently according to their type. The grid type visualization is generated from the heatmap_visualize function which takes into the rank of 3 and cluster it as per hierarchical clustering showing the dendogram.
 
 ```{r}
 heatmap_visualize()
@@ -150,6 +149,7 @@ visualizing_pca()
 
 
 The h_cluster function is used to perform clustering by grouping the data into a tree of clusters. First, through this function each cluster are generated and then it identifies the clusters that are closed together and is further showed in the tree as per the cluster. Here, the emotion are clustered in the dendrogram showing the cluster of emotions that shows similarity. 
+
 ```{r}
 h_cluster(emo_mat)
 ```
