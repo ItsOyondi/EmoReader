@@ -2,7 +2,7 @@
 
 ## Introduction
 
-EmoReader is a R package that generates the sentiments from the text document. It generates 10 different emotion from the text document and all the emotions are scored accordingly which is then coverted to a dgc matrix for the dimension reduction and clustering.
+```EmoReader``` is a R package that generates the sentiments from the text document. It generates 10 different emotion from the text document and all the emotions are scored accordingly which is then coverted to a dgc matrix for the dimension reduction and clustering.
 
 
 ## Installation of the package
@@ -80,7 +80,7 @@ data <- read.csv('Flipkart_Customer_Review.csv')
 data <- data.frame(star_rating = data$rating, review = data$review)
 ```
 
-Our read_inbuilt_Data function then pre-process the dataframe which is passed to the data.
+Our read_inbuilt_data function then pre-process the dataframe which is passed to the data.
 
 ```
 df_flip <- read_inbuilt_data(data)
