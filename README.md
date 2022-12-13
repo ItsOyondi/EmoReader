@@ -27,6 +27,7 @@ The link to the package vignette is below:
 
 ## Example Code Block
 
+# loading the in built dataset 
 ```
 df <- read_inbuilt_data(amazon_data)
 str(df)
@@ -37,34 +38,6 @@ str(df)
 
 
 
-```
-emo_mat <- get_emotion(df)
-head(emo_mat)
-#  anger anticipation disgust fear joy sadness surprise trust negative
-#1	 0	      1       	0	      0 	1 	0       	0     	2     	0	
-#2	 0	      0	        0	      0 	0	  0	        0	      0	      0	
-#3	 0	      0	        0	      1	  0	  1	        0	      1	      1	
-#4	 0	      0	        0	      1	  0	  0	        0	      0     	1	
-#5	 1	      1	        0	      0	  1	  0	        0	      1	      1
-
-```
-
-
-```
-count_emotions(emo_mat)
- 
-#              count   emotion
-# anger	        164	    anger		
-# anticipation	389	    anticipation		
-# disgust	      90	    disgust		
-# fear	        152	    fear		
-# joy	          348	    joy		
-# sadness	      194	    sadness		
-# surprise	    216   	surprise		
-# trust	        401	    trust		
-# negative	    350	    negative		
-# positive	    715	    positive
-```
 
 ```
 my_mat <-matrix_conversion(emo_mat)
@@ -92,4 +65,33 @@ head(sparse_mat)
 # [4,] . . . 1 . . . . 1 .
 # [5,] 1 1 . . 1 . . 1 1 3
 # [6,] . 1 . . 1 . 1 1 . 3
+```
+
+#loading the csv file and passing to dataframe 
+```
+library(readr)
+data <- read.csv('Flipkart_Customer_Review.csv')
+data <- data.frame(star_rating = data$rating, review = data$review)
+```
+
+```
+df_flip <- read_inbuilt_data(data)
+str(df_flip)
+
+# 'data.frame':	1000 obs. of  2 variables:
+#  $ star_rating: int  5 5 4 5 5 5 4 4 5 5 ...
+#  $ review     : chr  "It was nice produt. I like it's design a lot.  It's easy to carry. And.   Looked stylish.READ MORE" "awesome sound....very pretty #  to see this nd the sound quality was too good I wish to take this product loved ...
+```
+
+```
+emo_mat <- get_emotion(df_flip)
+head(emo_mat)
+
+#    anger anticipation disgust fear joy sadness surprise trust negative
+# 1   	0       	0        	0     	0	   0   	0	       0	      0	      0	
+# 2   	0	       2	        0	     0	   2	   0	       1	      2	      0	
+# 3	   1	       3	        0	     1	   1	   0	       1	      3	      1	
+# 4	   0	       2	        0	     1	   3	   1	       1	      4      	2	
+# 5	   0	       2	        0 	    0	   1	   0	       1	      1	      1	
+# 6	   2	       4	        1	     1	   5   	1	       0	      4	      1	
 ```
