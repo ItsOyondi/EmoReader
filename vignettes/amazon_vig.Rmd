@@ -282,6 +282,7 @@ From running the package, we came to find out that both the clustering method wa
 5. https://www.geeksforgeeks.org/k-means-clustering-in-r-programming/
 6. https://www.datacamp.com/tutorial/hierarchical-clustering-R
 7. https://r-pkgs.org/man.html
+8. https://zdebruine.github.io/singlet/articles/Guided_Clustering_with_NMF.html
 
 
 
