@@ -267,6 +267,8 @@ After running the pca_func and reducing the dimension, the h_cluster function is
 ```{r}
 h_cluster(emo_mat)
 ```
+
+
 ## Conclusion
 
 From running the package, we came to find out that both the clustering method was good at classifying the emotions, however, for the dimension reduction NMF provided a meaningful information whereas the PCA didn't provided information as expected.
