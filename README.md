@@ -26,3 +26,7 @@ The link to the package vignette is below:
 
 
 ## Example Code Block
+
+```
+amazon_data
+```
