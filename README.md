@@ -29,4 +29,7 @@ The link to the package vignette is below:
 
 ```
 str(amazon_data)
+#> 'data.frame':	500 obs. of  2 variables:
+#>  $ star_rating: int  5 5 5 4 2 3 3 5 4 5 ...
+#>  $ review     : chr  "As advertised. Everything works perfectly, I'm very happy with the camera. As a matter of fact I'm going to buy"| __truncated__ #> "it's great" "These work great and fit my life proof case for the iPhone 6" "Work very well but could not get used to not hearing anything out of the #>  ear they v were plugged into." ...
 ```
