@@ -3,7 +3,7 @@
 
 #' @title Read inbuilt data set
 #' @name read_inbuilt_data
-#' @param data csv file as a parameter
+#' @param data is a dataframe passed as a parameter
 #' @return A data frame
 #' @description The function read_inbuilt_data is used for reading our data set.
 #' Before beginning data analysis, it may be best to investigate and clean the data.
@@ -29,7 +29,7 @@ read_inbuilt_data <- function(data){
 
 #' @title get emotions
 #' @name get_emotion
-#' @param csv_file csv file as a parameter
+#' @param csv_file is a dataframe passed as a parameter
 #' @return A data frame
 #' @description This function works by dividing emotions in an column and they are giving us a total of 10
 #' different emotions, for example anger, eagerness, contempt, fear, joy, sadness, surprise, trust, negativity, and positivity,
@@ -45,7 +45,7 @@ get_emotion <- function(csv_file){
 
 #' @title counting emotions
 #' @name count_emotions
-#' @param emotion_file emo_mat file as a parameter to count how many words will fall under each emotion
+#' @param emotion_file is the variable which is generated from get_emotion function.
 #' @return A data frame
 #' @description This  function is used to count the total number of words are present
 #' in each emotion after the words have been divided by 10 emotions
@@ -60,7 +60,7 @@ count_emotions <-function(emotion_file){
 
 #' @title matrix conversion
 #' @name matrix_conversion
-#' @param data_file csv file as a parameter
+#' @param data_file is the variable which is generated from get_emotion function.
 #' @return matrix
 #' @description Converting each of the 10 emotions data frames into a matrix data frame since
 #' dimension reduction will become easy to perform after the conversion of matrix data frame
@@ -121,7 +121,7 @@ norm_sparse_matrix <- function(){
 
 #' @title modeling nmf
 #' @name modeling_nmf
-#' @param rank sparsematrix as a parameter
+#' @param rank is a number of rank which is passed as a parameter.
 #' @return modeling data
 #' @description modeling nmf to discover hidden semantic patterns in unstructured collection of documents.
 #' Modeling by using Rank where the value or range of ranks for which NMF is performed.
@@ -183,7 +183,7 @@ visualizing_pca <- function (){
 set.seed(1234) # Setting seed
 #' @title Clustering by using Kmeans
 #' @name cluster_kmeans
-#' @param data_matrix emo_mat file as a parameter
+#' @param data_matrix is the variable which is generated from get_emotion function.
 #' @return graph
 #' @description K-means clustering is an Unsupervised Non-linear algorithm that cluster data based on similarity or similar groups. It chooses the number K clusters
 #' It Select at random K points, and forms centroids and it will Assign each data point to closest centroid that forms K clusters.
@@ -238,7 +238,7 @@ cluster_kmeans <- function(data_matrix){
 
 #' @title Hirarchial clustering
 #' @name h_cluster
-#' @param emo emo_mat file as a parameter
+#' @param emo is the variable which is generated from get_emotion function.
 #' @return graph
 #' @description Hierarchical clustering is mostly used for combining nearest clusters into one large cluster here in our package we are combing nearest emotions into one
 #' large cluster to find the nearest clusters h cluster firstly calculate the distance between every pair of observation points and store it in a distance matrix. By plotting our data,
