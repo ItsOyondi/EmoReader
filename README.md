@@ -87,11 +87,11 @@ str(df_flip)
 emo_mat <- get_emotion(df_flip)
 head(emo_mat)
 
-#    anger anticipation disgust fear joy sadness surprise trust negative
-# 1   	0       	0        	0     	0	   0   	0	       0	      0	      0	
-# 2   	0	       2	        0	     0	   2	   0	       1	      2	      0	
-# 3	   1	       3	        0	     1	   1	   0	       1	      3	      1	
-# 4	   0	       2	        0	     1	   3	   1	       1	      4      	2	
-# 5	   0	       2	        0 	    0	   1	   0	       1	      1	      1	
-# 6	   2	       4	        1	     1	   5   	1	       0	      4	      1	
+#      anger anticipation disgust fear joy sadness surprise trust negative positive
+# 1      0            0       0    0   0       0        0     0        0        0
+# 2      0            2       0    0   2       0        1     2        0        2
+# 3      1            3       0    1   1       0        1     3        1        4
+# 4      0            2       0    1   3       1        1     4        2        5
+# 5      0            2       0    0   1       0        1     1        1        2
+# 6      2            4       1    1   5       1        0     4        1        6
 ```
